@@ -1,0 +1,684 @@
+---
+import '../../../styles/global.css';
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="考试管理" />
+    <title>考试管理 - 安全检查管理系统</title>
+  </head>
+  <body class="bg-navy-950 min-h-screen">
+    <!-- 顶部导航 -->
+    <header class="fixed left-0 right-0 top-0 z-50 px-4 py-3 bg-navy-950/90 backdrop-blur-xl border-b border-white/10">
+      <div class="mx-auto max-w-7xl flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+          </span>
+          <span class="font-display text-lg font-bold text-white">考试管理</span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <a href="/admin" class="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white backdrop-blur transition hover:bg-white/10">返回管理首页</a>
+          <a href="/admin/exam/dashboard" class="rounded-full border border-orange-safety/30 bg-orange-safety/10 px-4 py-2 text-sm font-medium text-orange-safety backdrop-blur transition hover:bg-orange-safety/20">数据看板</a>
+          <button id="logout-btn" class="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white backdrop-blur transition hover:bg-white/10">退出登录</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="pt-20 pb-12">
+      <div class="mx-auto max-w-7xl px-4">
+        <!-- 顶部操作栏 -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <h1 class="text-2xl font-bold text-white">考试项目管理</h1>
+          <button id="add-project-btn" class="rounded-full bg-orange-safety px-6 py-2 text-sm font-bold text-navy-950 shadow-lg shadow-orange-safety/25 transition hover:bg-orange-safetyLight">+ 新建考试项目</button>
+        </div>
+
+        <!-- 考试项目列表 -->
+        <div id="projects-list" class="space-y-4 mb-8">
+          <div class="text-center py-8 text-steel-400">加载中...</div>
+        </div>
+
+        <!-- 题目管理区域 -->
+        <div id="question-editor" class="hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <h2 id="current-project-title" class="text-xl font-bold text-white">题目管理</h2>
+            <div class="flex gap-3">
+              <button id="add-question-btn" class="rounded-full bg-blue-500 px-6 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/25 transition hover:bg-blue-400">+ 添加题目</button>
+              <button id="back-to-list-btn" class="rounded-full border border-white/15 bg-white/5 px-6 py-2 text-sm font-bold text-white backdrop-blur transition hover:bg-white/10">返回项目列表</button>
+            </div>
+          </div>
+          <div id="questions-list" class="space-y-4">
+            <div class="text-center py-8 text-steel-400">加载中...</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 创建/编辑考试项目模态框 -->
+    <div id="project-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+      <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-navy-950 shadow-2xl p-6">
+        <button id="close-project-modal" class="absolute top-4 right-4 rounded-full bg-white/5 p-2 text-steel-400 hover:text-white transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+        <h2 id="project-modal-title" class="text-xl font-bold text-white mb-6">新建考试项目</h2>
+        <form id="project-form" class="space-y-4">
+          <input type="hidden" id="project-id" />
+          <div>
+            <label class="block text-sm font-medium text-white mb-2">项目名称 *</label>
+            <input type="text" id="project-name" class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20" placeholder="例如：风电大件运输安全考试" required />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-white mb-2">项目描述</label>
+            <textarea id="project-description" rows="3" class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20" placeholder="描述这个考试项目的内容和用途"></textarea>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-white mb-2">及格分数</label>
+              <input type="number" id="project-pass-score" value="80" min="0" max="100" class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-white mb-2">总分</label>
+              <input type="number" id="project-total-score" value="100" min="0" class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-white mb-2">考试时长（分钟）</label>
+              <input type="number" id="project-duration" value="60" min="1" class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20" />
+            </div>
+          </div>
+          <div>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" id="project-is-active" checked class="rounded border-white/30 bg-white/5 text-orange-safety focus:ring-orange-safety" />
+              <span class="text-sm text-white">发布到前台</span>
+            </label>
+          </div>
+          <div class="flex justify-end gap-3 pt-4">
+            <button type="button" id="cancel-project-btn" class="rounded-full border border-white/15 bg-white/5 px-6 py-2 text-sm font-bold text-white backdrop-blur transition hover:bg-white/10">取消</button>
+            <button type="submit" class="rounded-full bg-orange-safety px-6 py-2 text-sm font-bold text-navy-950 shadow-lg shadow-orange-safety/25 transition hover:bg-orange-safetyLight">保存</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 创建/编辑题目模态框 -->
+    <div id="question-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+      <div class="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-navy-950 shadow-2xl p-6">
+        <button id="close-question-modal" class="absolute top-4 right-4 rounded-full bg-white/5 p-2 text-steel-400 hover:text-white transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+        <h2 id="question-modal-title" class="text-xl font-bold text-white mb-6">添加题目</h2>
+        <form id="question-form" class="space-y-4">
+          <input type="hidden" id="question-id" />
+          <input type="hidden" id="question-project-id" />
+          <div>
+            <label class="block text-sm font-medium text-white mb-2">题目类型 *</label>
+            <select id="question-type" class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20">
+              <option value="single">单选题</option>
+              <option value="multiple">多选题</option>
+              <option value="judge">判断题</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-white mb-2">题目内容 *</label>
+            <textarea id="question-content" rows="3" class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20" placeholder="请输入题目内容" required></textarea>
+          </div>
+          <div id="options-container">
+            <label class="block text-sm font-medium text-white mb-2">选项</label>
+            <div id="options-list" class="space-y-2 mb-2"></div>
+            <button type="button" id="add-option-btn" class="text-sm text-orange-safety hover:text-orange-safetyLight">+ 添加选项</button>
+          </div>
+          <div id="answer-container">
+            <label class="block text-sm font-medium text-white mb-2">正确答案 *</label>
+            <div id="answer-input"></div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-white mb-2">分数</label>
+              <input type="number" id="question-score" value="4" min="1" class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-white mb-2">排序</label>
+              <input type="number" id="question-sort" value="0" min="0" class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20" />
+            </div>
+          </div>
+          <div class="flex justify-end gap-3 pt-4">
+            <button type="button" id="cancel-question-btn" class="rounded-full border border-white/15 bg-white/5 px-6 py-2 text-sm font-bold text-white backdrop-blur transition hover:bg-white/10">取消</button>
+            <button type="button" id="save-question-btn" class="rounded-full bg-orange-safety px-6 py-2 text-sm font-bold text-navy-950 shadow-lg shadow-orange-safety/25 transition hover:bg-orange-safetyLight">保存</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      let currentUser = null;
+      let currentProjectId = null;
+      let currentOptionIndex = 0;
+
+      // 将函数挂载到 window 对象，供动态生成的按钮调用
+      window.openProjectModal = function(project) {
+        const modal = document.getElementById('project-modal');
+        const title = document.getElementById('project-modal-title');
+        const form = document.getElementById('project-form');
+
+        form.reset();
+        currentOptionIndex = 0;
+
+        if (project) {
+          title.textContent = '编辑考试项目';
+          document.getElementById('project-id').value = project.id;
+          document.getElementById('project-name').value = project.name;
+          document.getElementById('project-description').value = project.description || '';
+          document.getElementById('project-pass-score').value = project.pass_score;
+          document.getElementById('project-total-score').value = project.total_score;
+          document.getElementById('project-duration').value = project.duration;
+          document.getElementById('project-is-active').checked = project.is_active;
+        } else {
+          title.textContent = '新建考试项目';
+          document.getElementById('project-id').value = '';
+          document.getElementById('project-pass-score').value = 80;
+          document.getElementById('project-total-score').value = 100;
+          document.getElementById('project-duration').value = 60;
+          document.getElementById('project-is-active').checked = true;
+        }
+
+        modal.classList.remove('hidden');
+      };
+
+      window.closeProjectModal = function() {
+        document.getElementById('project-modal').classList.add('hidden');
+      };
+
+      window.editProject = async function(id) {
+        try {
+          const res = await fetch('/api/exam/projects/' + id);
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          window.openProjectModal(data.data);
+        } catch (error) {
+          alert('加载失败：' + error.message);
+        }
+      };
+
+      window.deleteProject = async function(id) {
+        if (!confirm('确定要删除这个考试项目吗？此操作不可恢复。')) return;
+
+        try {
+          const res = await fetch('/api/exam/projects/' + id, { method: 'DELETE' });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          await window.loadProjects();
+        } catch (error) {
+          alert('删除失败：' + error.message);
+        }
+      };
+
+      window.manageQuestions = function(projectId) {
+        currentProjectId = projectId;
+        document.getElementById('projects-list').classList.add('hidden');
+        document.getElementById('question-editor').classList.remove('hidden');
+        window.loadQuestions(projectId);
+      };
+
+      window.backToProjectList = function() {
+        currentProjectId = null;
+        document.getElementById('question-editor').classList.add('hidden');
+        document.getElementById('projects-list').classList.remove('hidden');
+      };
+
+      window.loadProjects = async function() {
+        try {
+          const res = await fetch('/api/exam/projects');
+          const data = await res.json();
+
+          if (!data.success) throw new Error(data.message);
+
+          const projectsListDiv = document.getElementById('projects-list');
+          if (data.data.length === 0) {
+            projectsListDiv.innerHTML = '<div class="text-center py-12"><div class="text-steel-400 mb-4">暂无考试项目</div><button onclick="window.openProjectModal()" class="rounded-full bg-orange-safety px-6 py-2 text-sm font-bold text-navy-950 shadow-lg shadow-orange-safety/25 transition hover:bg-orange-safetyLight">+ 创建第一个考试项目</button></div>';
+          } else {
+            projectsListDiv.innerHTML = data.data.map(project =>
+              '<div class="p-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">' +
+              '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">' +
+              '<div>' +
+              '<div class="flex items-center gap-3">' +
+              '<h3 class="text-xl font-bold text-white">' + project.name + '</h3>' +
+              '<span class="rounded-full px-3 py-1 text-xs font-medium ' + (project.is_active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400') + '">' + (project.is_active ? '已发布' : '未发布') + '</span>' +
+              '</div>' +
+              (project.description ? '<p class="text-steel-400 text-sm mt-1">' + project.description + '</p>' : '') +
+              '</div>' +
+              '<div class="flex gap-2">' +
+              '<button onclick="window.editProject(' + project.id + ')" class="rounded-lg border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-sm font-medium text-blue-400 hover:bg-blue-500/20 transition">编辑</button>' +
+              '<button onclick="window.manageQuestions(' + project.id + ')" class="rounded-lg border border-orange-safety/30 bg-orange-safety/10 px-4 py-2 text-sm font-medium text-orange-safety hover:bg-orange-safety/20 transition">题目管理</button>' +
+              '<button onclick="window.deleteProject(' + project.id + ')" class="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400 hover:bg-red-500/20 transition">删除</button>' +
+              '</div>' +
+              '</div>' +
+              '<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">' +
+              '<div><span class="text-steel-500">及格分数：</span><span class="text-white">' + project.pass_score + '/' + project.total_score + '</span></div>' +
+              '<div><span class="text-steel-500">考试时长：</span><span class="text-white">' + project.duration + '分钟</span></div>' +
+              '<div><span class="text-steel-500">创建时间：</span><span class="text-white">' + new Date(project.created_at).toLocaleString() + '</span></div>' +
+              '</div>' +
+              '</div>'
+            ).join('');
+          }
+        } catch (error) {
+          console.error(error);
+          document.getElementById('projects-list').innerHTML = '<div class="text-center py-8 text-red-400">加载失败：' + error.message + '</div>';
+        }
+      };
+
+      window.loadQuestions = async function(projectId) {
+        try {
+          const res = await fetch('/api/exam/questions?project_id=' + projectId);
+          const data = await res.json();
+
+          if (!data.success) throw new Error(data.message);
+
+          const projectRes = await fetch('/api/exam/projects/' + projectId);
+          const projectData = await projectRes.json();
+          if (projectData.success) {
+            document.getElementById('current-project-title').textContent = '题目管理 - ' + projectData.data.name;
+          }
+
+          const questionsListDiv = document.getElementById('questions-list');
+          if (data.data.length === 0) {
+            questionsListDiv.innerHTML = '<div class="text-center py-12"><div class="text-steel-400 mb-4">暂无题目</div><button onclick="window.openQuestionModal()" class="rounded-full bg-orange-safety px-6 py-2 text-sm font-bold text-navy-950 shadow-lg shadow-orange-safety/25 transition hover:bg-orange-safetyLight">+ 添加第一个题目</button></div>';
+          } else {
+            questionsListDiv.innerHTML = data.data.map((q, index) =>
+              '<div class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">' +
+              '<div class="flex items-start justify-between gap-4">' +
+              '<div class="flex-1">' +
+              '<div class="flex items-center gap-3 mb-2">' +
+              '<span class="text-xs text-steel-400">#' + (index + 1) + '</span>' +
+              '<span class="rounded-full px-2 py-0.5 text-xs font-medium ' + (q.type === 'single' ? 'bg-blue-500/20 text-blue-400' : q.type === 'multiple' ? 'bg-purple-500/20 text-purple-400' : 'bg-amber-500/20 text-amber-400') + '">' + (q.type === 'single' ? '单选题' : q.type === 'multiple' ? '多选题' : '判断题') + '</span>' +
+              '<span class="text-xs text-steel-400">' + q.score + ' 分</span>' +
+              '</div>' +
+              '<p class="text-white font-medium mb-3">' + q.question + '</p>' +
+              (q.options ? '<div class="text-sm text-steel-400 space-y-1">' + JSON.parse(q.options).map((opt, i) => '<div>' + String.fromCharCode(65 + i) + '. ' + opt + '</div>').join('') + '</div>' : '') +
+              '</div>' +
+              '<div class="flex gap-2">' +
+              '<button onclick="window.editQuestion(' + JSON.stringify(q).replace(/"/g, '&quot;') + ')" class="rounded-lg border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-sm text-blue-400 hover:bg-blue-500/20 transition">编辑</button>' +
+              '<button onclick="window.deleteQuestion(' + q.id + ')" class="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1 text-sm text-red-400 hover:bg-red-500/20 transition">删除</button>' +
+              '</div>' +
+              '</div>' +
+              '</div>'
+            ).join('');
+          }
+        } catch (error) {
+          console.error(error);
+          document.getElementById('questions-list').innerHTML = '<div class="text-center py-8 text-red-400">加载失败：' + error.message + '</div>';
+        }
+      };
+
+      window.updateAnswerInput = function() {
+        const type = document.getElementById('question-type').value;
+        const answerContainer = document.getElementById('answer-input');
+
+        if (type === 'judge') {
+          answerContainer.innerHTML = '<div class="flex gap-4"><label class="flex items-center gap-2"><input type="radio" name="judge-answer" value="true" class="text-orange-safety focus:ring-orange-safety" /><span class="text-white">正确</span></label><label class="flex items-center gap-2"><input type="radio" name="judge-answer" value="false" class="text-orange-safety focus:ring-orange-safety" /><span class="text-white">错误</span></label></div>';
+        } else if (type === 'single') {
+          window.updateSingleChoiceAnswer();
+        } else if (type === 'multiple') {
+          window.updateMultipleChoiceAnswer();
+        }
+      };
+
+      window.updateSingleChoiceAnswer = function() {
+        const options = document.querySelectorAll('#options-list input[type="text"]');
+        const answerContainer = document.getElementById('answer-input');
+
+        if (options.length === 0) {
+          answerContainer.innerHTML = '<div class="text-steel-400 text-sm">请先添加选项</div>';
+          return;
+        }
+
+        answerContainer.innerHTML = '<div class="flex flex-wrap gap-4">' + Array.from(options).map((_, i) => '<label class="flex items-center gap-2"><input type="radio" name="single-answer" value="' + i + '" class="text-orange-safety focus:ring-orange-safety" /><span class="text-white">' + String.fromCharCode(65 + i) + '</span></label>').join('') + '</div>';
+      };
+
+      window.updateMultipleChoiceAnswer = function() {
+        const options = document.querySelectorAll('#options-list input[type="text"]');
+        const answerContainer = document.getElementById('answer-input');
+
+        if (options.length === 0) {
+          answerContainer.innerHTML = '<div class="text-steel-400 text-sm">请先添加选项</div>';
+          return;
+        }
+
+        answerContainer.innerHTML = '<div class="flex flex-wrap gap-4">' + Array.from(options).map((_, i) => '<label class="flex items-center gap-2"><input type="checkbox" name="multiple-answer" value="' + i + '" class="rounded border-white/30 bg-white/5 text-orange-safety focus:ring-orange-safety" /><span class="text-white">' + String.fromCharCode(65 + i) + '</span></label>').join('') + '</div>';
+      };
+
+      window.addOption = function(value) {
+        value = value || '';
+        const optionsList = document.getElementById('options-list');
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'flex gap-2 items-center';
+        optionDiv.innerHTML = '<span class="text-white font-medium">' + String.fromCharCode(65 + currentOptionIndex) + '.</span><input type="text" value="' + value + '" class="flex-1 rounded-lg border border-white/10 bg-navy-950/50 px-3 py-2 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none" placeholder="选项内容" required /><button type="button" onclick="window.removeOption(this)" class="text-red-400 hover:text-red-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>';
+        optionsList.appendChild(optionDiv);
+        currentOptionIndex++;
+        window.updateAnswerInput();
+      };
+
+      window.removeOption = function(btn) {
+        btn.parentElement.remove();
+        const allOptionDivs = document.querySelectorAll('#options-list > div');
+        allOptionDivs.forEach((div, index) => {
+          div.querySelector('span').textContent = String.fromCharCode(65 + index) + '.';
+        });
+        currentOptionIndex = allOptionDivs.length;
+        window.updateAnswerInput();
+      };
+
+      window.openQuestionModal = function(question) {
+        const modal = document.getElementById('question-modal');
+        const title = document.getElementById('question-modal-title');
+        const form = document.getElementById('question-form');
+
+        form.reset();
+        document.getElementById('options-list').innerHTML = '';
+        currentOptionIndex = 0;
+        document.getElementById('question-project-id').value = currentProjectId;
+
+        const typeSelect = document.getElementById('question-type');
+        typeSelect.onchange = function() {
+          const type = typeSelect.value;
+          const optionsContainer = document.getElementById('options-container');
+          if (type === 'judge') {
+            optionsContainer.classList.add('hidden');
+          } else {
+            optionsContainer.classList.remove('hidden');
+          }
+          window.updateAnswerInput();
+        };
+
+        // 初始化题目类型相关的UI和答案输入
+        typeSelect.dispatchEvent(new Event('change'));
+
+        if (question) {
+          title.textContent = '编辑题目';
+          document.getElementById('question-id').value = question.id;
+          document.getElementById('question-content').value = question.question;
+          document.getElementById('question-score').value = question.score;
+          document.getElementById('question-sort').value = question.sort_order || 0;
+          document.getElementById('question-type').value = question.type;
+
+          if (question.type !== 'judge' && question.options) {
+            const options = JSON.parse(question.options);
+            options.forEach(opt => window.addOption(opt));
+          } else if (question.type === 'judge') {
+            document.getElementById('options-container').classList.add('hidden');
+          }
+
+          setTimeout(function() {
+            const answer = JSON.parse(question.answer);
+            if (question.type === 'judge') {
+              const radio = document.querySelector('input[name="judge-answer"][value="' + answer + '"]');
+              if (radio) radio.checked = true;
+            } else if (question.type === 'single') {
+              const radio = document.querySelector('input[name="single-answer"][value="' + answer + '"]');
+              if (radio) radio.checked = true;
+            } else if (question.type === 'multiple') {
+              if (Array.isArray(answer)) {
+                answer.forEach(a => {
+                  const checkbox = document.querySelector('input[name="multiple-answer"][value="' + a + '"]');
+                  if (checkbox) checkbox.checked = true;
+                });
+              }
+            }
+          }, 100);
+        } else {
+          title.textContent = '添加题目';
+          document.getElementById('question-id').value = '';
+          document.getElementById('question-score').value = 4;
+          document.getElementById('question-sort').value = 0;
+          document.getElementById('question-type').value = 'single';
+          document.getElementById('options-container').classList.remove('hidden');
+          window.addOption();
+          window.addOption();
+        }
+
+        modal.classList.remove('hidden');
+      };
+
+      window.closeQuestionModal = function() {
+        document.getElementById('question-modal').classList.add('hidden');
+      };
+
+      window.editQuestion = function(question) {
+        window.openQuestionModal(question);
+      };
+
+      window.deleteQuestion = async function(id) {
+        if (!confirm('确定要删除这个题目吗？')) return;
+
+        try {
+          const res = await fetch('/api/exam/questions', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id })
+          });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          await window.loadQuestions(currentProjectId);
+        } catch (error) {
+          alert('删除失败：' + error.message);
+        }
+      };
+
+      window.logout = async function() {
+        if (!confirm('确定要退出登录吗？')) return;
+        try {
+          await fetch('/api/auth/logout', { method: 'POST' });
+          window.location.href = '/admin/login';
+        } catch (error) {
+          alert('登出失败');
+        }
+      };
+
+      async function checkAuth() {
+        try {
+          const res = await fetch('/api/auth/me');
+          const data = await res.json();
+          if (!data.success) {
+            window.location.href = '/admin/login';
+            return false;
+          }
+          currentUser = data.data;
+          return true;
+        } catch (error) {
+          window.location.href = '/admin/login';
+          return false;
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', async () => {
+        const isLoggedIn = await checkAuth();
+        if (!isLoggedIn) return;
+
+        await window.loadProjects();
+
+        document.getElementById('logout-btn').addEventListener('click', window.logout);
+        document.getElementById('add-project-btn').addEventListener('click', function() { window.openProjectModal(); });
+        document.getElementById('close-project-modal').addEventListener('click', window.closeProjectModal);
+        document.getElementById('cancel-project-btn').addEventListener('click', window.closeProjectModal);
+        document.getElementById('add-question-btn').addEventListener('click', function() { window.openQuestionModal(); });
+        document.getElementById('close-question-modal').addEventListener('click', window.closeQuestionModal);
+        document.getElementById('cancel-question-btn').addEventListener('click', window.closeQuestionModal);
+        document.getElementById('back-to-list-btn').addEventListener('click', window.backToProjectList);
+        document.getElementById('add-option-btn').addEventListener('click', function() { window.addOption(); });
+
+        // 保存按钮点击事件
+        document.getElementById('save-question-btn').addEventListener('click', async function() {
+          console.log('Save button clicked');
+          const id = document.getElementById('question-id').value;
+          const type = document.getElementById('question-type').value;
+          const question = document.getElementById('question-content').value;
+          let options = [];
+          let answer;
+
+          if (!question.trim()) {
+            alert('请输入题目内容');
+            return;
+          }
+
+          if (type !== 'judge') {
+            const optionInputs = document.querySelectorAll('#options-list input[type="text"]');
+            options = Array.from(optionInputs).map(function(input) { return input.value; });
+            if (options.some(opt => !opt.trim())) {
+              alert('请填写完整的选项内容');
+              return;
+            }
+          }
+
+          if (type === 'judge') {
+            const selected = document.querySelector('input[type="radio"][name="judge-answer"]:checked');
+            console.log('judge answer selected:', selected);
+            if (!selected) {
+              alert('请选择正确答案');
+              return;
+            }
+            answer = selected.value === 'true';
+          } else if (type === 'single') {
+            const selected = document.querySelector('input[name="single-answer"]:checked');
+            if (!selected) {
+              alert('请选择正确答案');
+              return;
+            }
+            answer = parseInt(selected.value);
+          } else if (type === 'multiple') {
+            const selected = document.querySelectorAll('input[name="multiple-answer"]:checked');
+            if (selected.length === 0) {
+              alert('请至少选择一个正确答案');
+              return;
+            }
+            answer = Array.from(selected).map(function(input) { return parseInt(input.value); });
+          }
+
+          const data = {
+            project_id: parseInt(document.getElementById('question-project-id').value),
+            type: type,
+            question: question,
+            options: options,
+            answer: answer,
+            score: parseInt(document.getElementById('question-score').value),
+            sort_order: parseInt(document.getElementById('question-sort').value)
+          };
+
+          if (id) {
+            data.id = parseInt(id);
+          }
+
+          console.log('Submitting data:', data);
+
+          try {
+            const res = await fetch('/api/exam/questions', {
+              method: id ? 'PUT' : 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            console.log('Response:', result);
+            if (!result.success) throw new Error(result.message);
+            window.closeQuestionModal();
+            await window.loadQuestions(currentProjectId);
+          } catch (error) {
+            alert('保存失败：' + error.message);
+          }
+        });
+
+        document.getElementById('project-form').addEventListener('submit', async function(e) {
+          e.preventDefault();
+          const id = document.getElementById('project-id').value;
+          const data = {
+            name: document.getElementById('project-name').value,
+            description: document.getElementById('project-description').value,
+            pass_score: parseInt(document.getElementById('project-pass-score').value),
+            total_score: parseInt(document.getElementById('project-total-score').value),
+            duration: parseInt(document.getElementById('project-duration').value),
+            is_active: document.getElementById('project-is-active').checked
+          };
+
+          try {
+            const res = await fetch(id ? '/api/exam/projects/' + id : '/api/exam/projects', {
+              method: id ? 'PUT' : 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (!result.success) throw new Error(result.message);
+            window.closeProjectModal();
+            await window.loadProjects();
+          } catch (error) {
+            alert('保存失败：' + error.message);
+          }
+        });
+
+        document.getElementById('question-form').addEventListener('submit', async function(e) {
+          e.preventDefault();
+          console.log('Form submitted, type:', document.getElementById('question-type').value);
+          const id = document.getElementById('question-id').value;
+          const type = document.getElementById('question-type').value;
+          let options = [];
+          let answer;
+
+          if (type !== 'judge') {
+            const optionInputs = document.querySelectorAll('#options-list input[type="text"]');
+            options = Array.from(optionInputs).map(function(input) { return input.value; });
+          }
+
+          if (type === 'judge') {
+            const selected = document.querySelector('input[type="radio"][name="judge-answer"]:checked');
+            console.log('judge answer selected:', selected);
+            if (!selected) {
+              alert('请选择正确答案');
+              return;
+            }
+            answer = selected.value === 'true';
+          } else if (type === 'single') {
+            const selected = document.querySelector('input[name="single-answer"]:checked');
+            answer = selected ? parseInt(selected.value) : 0;
+          } else if (type === 'multiple') {
+            const selected = document.querySelectorAll('input[name="multiple-answer"]:checked');
+            answer = Array.from(selected).map(function(input) { return parseInt(input.value); });
+          }
+
+          const data = {
+            project_id: parseInt(document.getElementById('question-project-id').value),
+            type: type,
+            question: document.getElementById('question-content').value,
+            options: options,
+            answer: answer,
+            score: parseInt(document.getElementById('question-score').value),
+            sort_order: parseInt(document.getElementById('question-sort').value)
+          };
+
+          if (id) {
+            data.id = parseInt(id);
+          }
+
+          try {
+            const res = await fetch('/api/exam/questions', {
+              method: id ? 'PUT' : 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (!result.success) throw new Error(result.message);
+            window.closeQuestionModal();
+            await window.loadQuestions(currentProjectId);
+          } catch (error) {
+            alert('保存失败：' + error.message);
+          }
+        });
+
+        document.getElementById('project-modal').addEventListener('click', function(e) {
+          if (e.target === document.getElementById('project-modal')) window.closeProjectModal();
+        });
+        document.getElementById('question-modal').addEventListener('click', function(e) {
+          if (e.target === document.getElementById('question-modal')) window.closeQuestionModal();
+        });
+      });
+    </script>

@@ -1,0 +1,133 @@
+---
+import '../../styles/global.css';
+import { SiteParticles } from '../../components/SiteParticles';
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="风电大件运输恶劣天气运输窗口判断方法：风速阈值设定、能见度要求、雷电安全政策、路面状态评估、气象预报接入与窗口决策流程。" />
+    <meta name="theme-color" content="#040E1A" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="恶劣天气运输窗口判断｜风电大件运输安全知识中心" />
+    <meta property="og:description" content="风电大件运输恶劣天气运输窗口判断方法：风速阈值设定、能见度要求、雷电安全政策、路面状态评估、气象预报接入与窗口决策流程。" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://example.com/library/weather-window-assessment" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="恶劣天气运输窗口判断｜风电大件运输安全知识中心" />
+    <meta name="twitter:description" content="风速阈值设定、能见度要求、雷电安全政策、路面状态评估、气象预报接入与窗口决策流程。" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "恶劣天气运输窗口判断",
+        "description": "风电大件运输恶劣天气运输窗口判断方法：风速阈值设定、能见度要求、雷电安全政策、路面状态评估、气象预报接入与窗口决策流程。",
+        "inLanguage": "zh-CN",
+        "about": ["Weather Window", "Safety Assessment", "Heavy-Lift Transport"],
+        "proficiencyLevel": "Expert"
+      }
+    </script>
+
+    <title>恶劣天气运输窗口判断｜风电大件运输安全知识中心</title>
+  </head>
+  <body class="pb-20">
+    <SiteParticles client:load />
+    <header class="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/10 bg-navy-950/72 px-4 py-3 shadow-2xl shadow-black/30 backdrop-blur-xl sm:px-5">
+        <a href="/" class="flex items-center gap-3">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M4.5 7.5 12 12l7.5-4.5M5 17l7-5 7 5"/><circle cx="12" cy="12" r="2.2"/></svg>
+          </span>
+          <span class="font-display text-sm font-bold text-white sm:text-base">知识库</span>
+        </a>
+        <a href="/#library" class="text-sm text-steel-400 transition hover:text-white">← 返回知识库</a>
+      </nav>
+    </header>
+
+    <main class="pt-28">
+      <article class="container-article">
+        <p class="section-kicker">Weather Window Assessment</p>
+        <h1 class="mt-5 font-display text-4xl font-black leading-tight tracking-[-0.03em] text-white sm:text-5xl xl:text-6xl">恶劣天气运输窗口判断</h1>
+        <p class="mt-5 text-base leading-7 text-steel-400">风速阈值 · 能见度要求 · 雷电安全 · 路面评估 · 预报接入 · 窗口决策</p>
+
+        <div class="mt-10 h-px bg-gradient-to-r from-orange-safety/50 via-white/20 to-transparent"></div>
+
+        <div class="article-body">
+          <h2>一、概述</h2>
+          <p>风电大件运输相比普通货物运输对天气条件敏感得多。超长叶片在高风速下的横向偏摆风险、塔筒在湿滑路面上制动距离延长、机舱在吊装作业中对风速的敏感——这些因素使得天气窗口管理成为大件运输安全控制体系中不可省略的环节。</p>
+          <p>天气窗口管理的本质不是 "天气预报不准所以没办法管"，而是建立<strong>结构化的决策流程</strong>：当气象条件达到什么指标时，自动触发"降速运行"、"暂停作业"、"紧急避险"三级响应。</p>
+
+          <h2>二、风速阈值管理</h2>
+          <p>风速是影响风电大件运输的最关键气象要素，不同作业阶段应采用不同的风速阈值：</p>
+
+          <div class="highlight-box">
+            <p><strong>统一建议阈值：</strong></p>
+            <p>• 叶片运输途中：10 分钟平均风速 ≤ 10 m/s，阵风极值 ≤ 14 m/s</p>
+            <p>• 塔筒运输途中：10 分钟平均风速 ≤ 12 m/s，阵风极值 ≤ 16 m/s</p>
+            <p>• 码头/风场吊装作业：作业面风速 ≤ 10 m/s（视货物迎风面积调整）</p>
+            <p>• 绑扎/解绑作业：风速 ≤ 8 m/s（高处作业人员安全条件）</p>
+          </div>
+
+          <h3>风区专项管理</h3>
+          <p>在以下特殊地形路段，风速阈值应从严 20%–30%：</p>
+          <ul>
+            <li><strong>峡谷风区：</strong>山口、峡谷地段的狭管效应可使风速增大 1.5–2 倍，运输通过此类路段前必须取得实时风速数据。</li>
+            <li><strong>沿海公路：</strong>台风季节的沿海路段运输应接入气象部门的台风路径预报。当台风 24 小时警戒线进入运输区域 200 公里范围内时，应暂停运输。</li>
+            <li><strong>高海拔垭口：</strong>海拔 2000 米以上的路段，午后强对流天气频率高，建议优先安排上午时段通过。</li>
+          </ul>
+
+          <h2>三、能见度要求</h2>
+          <p>大件运输车辆的长度（含叶片悬出部分通常超过 60 米）决定了驾驶员无法通过后视镜观察尾部状态，必须依赖跟随车辆和后部警戒人员的视觉反馈。能见度不足时，这条依赖视觉通信的安全链将断裂。</p>
+
+          <ul>
+            <li><strong>正常运输最小能见度：</strong>≥ 200 米。</li>
+            <li><strong>降速运输能见度：</strong>100–200 米（限速 20 km/h，前后警戒车开启爆闪灯）。</li>
+            <li><strong>暂停运输能见度：</strong>< 100 米（寻找安全停靠点停车等待）。</li>
+            <li><strong>夜间运输附加要求：</strong>能见度 ≥ 300 米，且路线全程有照明或警戒车跟随照明。</li>
+          </ul>
+
+          <h2>四、雷电安全政策</h2>
+          <p>雷电对风电大件运输的安全威胁常被低估。一个容易被忽视的事实是：风电叶片在运输途中的高度可能达到 5–8 米（加上车辆平台高度），且碳纤维增强复合材料（CFRP）叶片具有导电性，在雷暴环境下可能成为接闪器。</p>
+
+          <ul>
+            <li><strong>绝对禁止：</strong>雷暴云团距离运输路线 ≤ 10 公里时，禁止叶片和塔筒运输作业。</li>
+            <li><strong>预警机制：</strong>运输期间应接入雷电定位系统（如 ADTD 系统）的实时预警信息。</li>
+            <li><strong>避险措施：</strong>运输途中遭遇突发雷暴，驾驶员应停车至低洼区域（避免高地、孤立大树、金属结构物附近），人员留在驾驶室内，关闭电子设备。</li>
+          </ul>
+
+          <h2>五、路面状态评估</h2>
+          <p>天气直接影响路面附着系数，对大件运输车辆的长距离重载制动和坡道起步有决定性影响。</p>
+
+          <ul>
+            <li><strong>干燥路面：</strong>附着系数 μ ≈ 0.6–0.8，正常运输。</li>
+            <li><strong>潮湿路面：</strong>附着系数 μ ≈ 0.4–0.6，限速 30 km/h，增大跟车距离至正常 2 倍。</li>
+            <li><strong>积水路面（水深 > 3 mm）：</strong>存在水滑风险，对大件运输车辆应暂停通行。</li>
+            <li><strong>冰雪路面：</strong>附着系数 μ ≤ 0.2，原则上禁止大件运输通行。</li>
+          </ul>
+
+          <h2>六、气象预报接入与决策流程</h2>
+          <h3>预报接入要求</h3>
+          <p>运输期间应获取以下气象信息源：国家级气象局发布的预警信息、路线沿线逐小时的精细化气象预报（温度、风速风向、降水概率、能见度）、雷暴预警系统、路面温度传感器数据。</p>
+
+          <h3>决策流程</h3>
+          <p>建议建立 "<strong>T–2h 最终决策</strong>" 机制：运输发车前 2 小时，由安全负责人根据最新气象信息作出"正常发车"、"延迟发车"或"取消当日运输"的最终决策。该决策应记录归档，作为运输管理台账的组成部分。恶劣天气窗口管理的核心不在于避免所有延迟，而在于避免在"差不多可以走"的模糊判断中冒险发车。</p>
+
+          <h2>七、总结</h2>
+          <p>天气窗口管理是大件运输安全体系中唯一一个完全不受人为控制的变量。正因如此，它更需要<strong>指标化、流程化、可追溯</strong>的管理方式。每一趟运输的天气窗口决策都应该有清晰的气象数据支撑、明确的决策标准和完整的记录归档，而不是凭现场人员"感觉还行"就发车。在天气窗口面前，"宁可晚一天，不抢一小时"应当成为团队共识。</p>
+        </div>
+
+        <div class="mt-16 flex items-center justify-between border-t border-white/10 pt-8">
+          <a href="/library/port-transshipment-safety" class="text-sm text-steel-400 transition hover:text-white">← 上一篇：港口转运与临时堆场安全</a>
+          <a href="/#library" class="text-sm text-orange-safety transition hover:text-orange-safetyLight">返回知识库 →</a>
+        </div>
+      </article>
+    </main>
+  </body>
+</html>

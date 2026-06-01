@@ -1,0 +1,135 @@
+---
+import '../../styles/global.css';
+import { SiteParticles } from '../../components/SiteParticles';
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="专业风电叶片运输路线勘察方法：转弯半径模拟、道路净空检查、桥梁承载复核、侧风窗口判断、叶尖扫摆监测全流程指南。" />
+    <meta name="theme-color" content="#040E1A" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="叶片运输路线勘察指南｜风电大件运输安全知识中心" />
+    <meta property="og:description" content="专业风电叶片运输路线勘察方法：转弯半径模拟、道路净空检查、桥梁承载复核、侧风窗口判断、叶尖扫摆监测全流程指南。" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://example.com/library/blade-route-survey" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="叶片运输路线勘察指南｜风电大件运输安全知识中心" />
+    <meta name="twitter:description" content="转弯半径模拟、道路净空检查、桥梁承载复核、侧风窗口判断、叶尖扫摆监测全流程指南。" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "叶片运输路线勘察指南",
+        "description": "专业风电叶片运输路线勘察方法：转弯半径模拟、道路净空检查、桥梁承载复核、侧风窗口判断、叶尖扫摆监测全流程指南。",
+        "inLanguage": "zh-CN",
+        "about": ["Wind Turbine Blade", "Transport Route Survey", "Heavy-Lift Transport"],
+        "proficiencyLevel": "Expert"
+      }
+    </script>
+
+    <title>叶片运输路线勘察指南｜风电大件运输安全知识中心</title>
+  </head>
+  <body class="pb-20">
+    <SiteParticles client:load />
+    <header class="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/10 bg-navy-950/72 px-4 py-3 shadow-2xl shadow-black/30 backdrop-blur-xl sm:px-5">
+        <a href="/" class="flex items-center gap-3">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M4.5 7.5 12 12l7.5-4.5M5 17l7-5 7 5"/><circle cx="12" cy="12" r="2.2"/></svg>
+          </span>
+          <span class="font-display text-sm font-bold text-white sm:text-base">知识库</span>
+        </a>
+        <a href="/#library" class="text-sm text-steel-400 transition hover:text-white">← 返回知识库</a>
+      </nav>
+    </header>
+
+    <main class="pt-28">
+      <article class="container-article">
+        <p class="section-kicker">Route Survey Guide</p>
+        <h1 class="mt-5 font-display text-4xl font-black leading-tight tracking-[-0.03em] text-white sm:text-5xl xl:text-6xl">叶片运输路线勘察指南</h1>
+        <p class="mt-5 text-base leading-7 text-steel-400">专业方法：转弯半径模拟 · 道路净空检查 · 桥梁承载复核 · 侧风窗口判断 · 叶尖扫摆监测</p>
+
+        <div class="mt-10 h-px bg-gradient-to-r from-orange-safety/50 via-white/20 to-transparent"></div>
+
+        <div class="article-body">
+          <h2>一、概述</h2>
+          <p>风机叶片（Wind Turbine Blade）是现代风电大件运输中最具路线挑战的品类。目前主流陆上风机的叶片长度已从早期的 40 米发展到如今的 80–120 米，单支叶片重量可达 20–35 吨。对于长度超过 80 米的叶片，其运输对道路基础设施的适应性提出了极高要求。</p>
+          <p>叶片运输的路线勘察并非普通的超限货物运输审批，而是一项融合了车辆动力学、道路工程学、结构力学和气象学的系统工程。本指南系统梳理了叶片运输路线勘察的关键环节、技术方法和执行标准。</p>
+
+          <h2>二、转弯半径分析</h2>
+          <p>叶片运输车辆通常采用伸缩式平板挂车（extendable flatbed trailer）或叶片专用运输工装（blade transport frame），总长度往往超过 60 米。在弯道路段，叶片尾部扫摆（tail swing）是最需要关注的动态风险。</p>
+
+          <div class="highlight-box">
+            <p><strong>关键参数：</strong>运输车辆总长 L、叶片悬出长度 O、车辆铰接点 K、弯道中心角 θ、路面宽度 W。叶片尾部扫摆轨迹半径 R_tail = √(L² + O² + 2·L·O·cos(θ/2))，该值必须小于弯道内缘可用半径。</p>
+          </div>
+
+          <h3>技术方法</h3>
+          <ul>
+            <li><strong>AutoCAD 路径仿真：</strong>将车辆参数录入路径仿真软件，在道路中线基础上绘制车辆行驶轨迹包络线，识别扫尾干涉区域。</li>
+            <li><strong>现场实测验证：</strong>对于关键弯道，建议采用全站仪或激光雷达对弯道内缘障碍物进行实测，生成高精度断面图。</li>
+            <li><strong>临时措施方案：</strong>当理论计算表明转弯间隙不足时，可采取临时拆除护栏、拓宽弯道内缘、使用液压转向辅助车轴或安排前导车占道等措施。</li>
+          </ul>
+
+          <h2>三、道路净空检查</h2>
+          <p>叶片运输的竖向净空不仅包括桥梁、涵洞、隧道的高度限制，还包括沿线的架空线缆、交通信号灯、路牌、行道树冠等潜在悬挂障碍物。</p>
+
+          <h3>净空检查清单</h3>
+          <ul>
+            <li><strong>桥梁涵洞：</strong>逐桥复核净高（设计值 vs 实测值），注意路面加铺层可能减少实际净空。</li>
+            <li><strong>架空线缆：</strong>记录沿线的电力线（注意电压等级对应的安全距离要求）、通信线缆、光纤线路位置和垂度。</li>
+            <li><strong>交通设施：</strong>信号灯横臂、监控立杆、指路牌悬挑长度对扫尾区域的影响。</li>
+            <li><strong>绿化障碍：</strong>行道树最低枝高度、树冠侵入行车道的范围，必要时安排修剪。</li>
+          </ul>
+
+          <h2>四、桥梁承载复核</h2>
+          <p>叶片运输虽然总重大部分由车辆分摊，但集中轴荷（axle load）对中小桥梁仍可能造成超过设计荷载的情况。桥梁复核应作为路线勘察的独立模块执行。</p>
+
+          <ul>
+            <li><strong>桥梁普查：</strong>全线所有桥梁应逐个记录结构形式（简支梁、连续梁、拱桥、刚构桥）、设计荷载等级（公路-I级、公路-II级等）、建造年代和最近检测报告状态。</li>
+            <li><strong>轴荷分布计算：</strong>根据车辆的实际轴距、轴数和叶片装载位置，计算最不利轴荷分布。重点关注跨中弯矩和支座反力。</li>
+            <li><strong>通行控制方案：</strong>对于承载能力不足的桥梁，可采取限制通行速度（≤5 km/h）、保持车辆居中行驶、单车通过（禁止桥上会车）、使用临时支撑等措施。</li>
+          </ul>
+
+          <h2>五、侧风窗口判断</h2>
+          <p>超长叶片在侧风作用下会产生明显的横向偏摆力和倾覆力矩。侧风窗口管理是叶片运输安全管理中的核心环节之一。</p>
+
+          <div class="highlight-box">
+            <p><strong>风险阈值：</strong>当 10 米高度处 10 分钟平均风速超过 10 m/s（约 5 级风）时，建议暂停长度 ≥ 80 米叶片的运输作业；阵风超过 14 m/s 时，无论平均风速多少，均应立即停运并寻找安全停靠点。</p>
+          </div>
+
+          <ul>
+            <li><strong>气象预报接入：</strong>运输期间应获取路线沿线逐小时的精细化气象预报，重点关注阵风极值和风向变化。</li>
+            <li><strong>现场风速监测：</strong>在峡谷、山口、桥梁等易形成狭管效应的路段，配备便携式风速仪进行实时监测。</li>
+            <li><strong>避险停靠规划：</strong>提前在路线勘察阶段识别可用于紧急停靠的宽阔路段、服务区或临时堆场。</li>
+          </ul>
+
+          <h2>六、叶尖扫摆监测</h2>
+          <p>叶片运输途中，由于道路坡度、侧风、车辆加减速等综合因素，叶片尾部（叶尖）会出现三维空间的摆动位移。叶尖扫摆监测是运输过程中唯一需要实时动态感应的安全控制项。</p>
+
+          <ul>
+            <li><strong>监控装置：</strong>建议在叶片尾端安装高度传感器、加速度计和 GPS 轨迹记录仪，实时回传扫摆幅度数据。</li>
+            <li><strong>预警机制：</strong>当扫摆幅度超过预设阈值（一般 ≤ 0.5 米），驾驶室和中控平台发出分级警报。</li>
+            <li><strong>同步跟随车：</strong>安排跟随车辆从后方观察叶尖扫摆情况，与驾驶员保持无线通讯，这在夜间或低能见度条件下尤为重要。</li>
+          </ul>
+
+          <h2>七、总结</h2>
+          <p>叶片运输的路线勘察是一项反复迭代、逐项确认的系统工程。核心原则是：不以 "<strong>之前走过</strong>" 代替 "<strong>这次复核</strong>" —— 每一次运输都应被视为独立的勘察任务。道路状况（施工、沉降、绿化生长）、车辆配置（不同叶片长度对应不同工装参数）和气象条件都在动态变化之中。</p>
+          <p>本指南建议与项目现场的安全管理体系和运输商的 SOP 结合执行，并作为运输前安全技术交底的核心文档。</p>
+        </div>
+
+        <div class="mt-16 flex items-center justify-between border-t border-white/10 pt-8">
+          <a href="/#library" class="text-sm text-steel-400 transition hover:text-white">← 返回知识库</a>
+          <a href="/library/tower-bridge-load" class="text-sm text-orange-safety transition hover:text-orange-safetyLight">下一篇：塔筒运输桥梁承载核查 →</a>
+        </div>
+      </article>
+    </main>
+  </body>
+</html>

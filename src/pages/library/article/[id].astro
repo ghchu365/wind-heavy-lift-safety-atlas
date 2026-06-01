@@ -1,0 +1,84 @@
+---
+import '../../../styles/global.css';
+import { SiteParticles } from '../../../components/SiteParticles';
+
+const { id } = Astro.params;
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>知识库文章</title>
+  </head>
+  <body class="bg-navy-950 min-h-screen">
+    <SiteParticles client:load />
+
+    <header class="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6">
+      <nav class="mx-auto flex max-w-4xl items-center justify-between rounded-2xl border border-white/10 bg-navy-950/72 px-4 py-3 shadow-2xl backdrop-blur-xl">
+        <a href="/" class="flex items-center gap-3">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18M4.5 7.5 12 12l7.5-4.5M5 17l7-5 7 5" />
+            </svg>
+          </span>
+          <span class="font-display text-sm font-bold text-white">风电大件运输安全知识中心</span>
+        </a>
+        <a href="/#library" class="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white backdrop-blur transition hover:bg-white/10">返回知识库</a>
+      </nav>
+    </header>
+
+    <main class="pt-24 pb-12">
+      <div class="mx-auto max-w-3xl px-4">
+        <div id="article-content" class="animate-pulse">
+          <div class="h-8 w-48 rounded bg-white/10 mb-4"></div>
+          <div class="space-y-3">
+            <div class="h-4 w-full rounded bg-white/5"></div>
+            <div class="h-4 w-5/6 rounded bg-white/5"></div>
+            <div class="h-4 w-4/5 rounded bg-white/5"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script define:vars={{ id }}>
+      async function loadArticle() {
+        try {
+          const res = await fetch(`/api/knowledge/article/${id}`);
+          const data = await res.json();
+          const container = document.getElementById('article-content');
+
+          if (!data.success || !data.data) {
+            container.innerHTML = '<div class="text-center py-20"><h1 class="text-2xl text-white mb-4">文章不存在</h1><a href="/#library" class="text-orange-safety hover:underline">返回知识库</a></div>';
+            return;
+          }
+
+          const article = data.data;
+          const content = article.content.replace(/\n/g, '<br>');
+
+          container.innerHTML = `
+            <article class="rounded-3xl border border-white/10 bg-white/5 p-8">
+              <div class="mb-6">
+                <span class="rounded-full bg-orange-safety/20 px-3 py-1 text-xs font-medium text-orange-safety">${article.category}</span>
+              </div>
+              <h1 class="text-3xl font-black text-white mb-6">${article.title}</h1>
+              <div class="text-sm text-steel-500 mb-8">
+                <span>作者：${article.author || '安全管理部'}</span>
+                <span class="mx-2">|</span>
+                <span>更新时间：${new Date(article.updated_at).toLocaleDateString('zh-CN')}</span>
+              </div>
+              <div class="prose prose-invert max-w-none">
+                <div class="text-steel-300 leading-8 whitespace-pre-line">${content}</div>
+              </div>
+            </article>
+          `;
+        } catch (error) {
+          console.error('加载文章失败:', error);
+          document.getElementById('article-content').innerHTML = '<div class="text-center py-20 text-red-400">加载失败，请重试</div>';
+        }
+      }
+
+      loadArticle();
+    </script>
+  </body>
+</html>

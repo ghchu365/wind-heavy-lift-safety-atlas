@@ -1,0 +1,307 @@
+---
+import '../../../styles/global.css';
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="考试数据看板" />
+    <title>考试数据看板 - 安全检查管理系统</title>
+  </head>
+  <body class="bg-navy-950 min-h-screen">
+    <!-- 顶部导航 -->
+    <header class="fixed left-0 right-0 top-0 z-50 px-4 py-3 bg-navy-950/90 backdrop-blur-xl border-b border-white/10">
+      <div class="mx-auto max-w-7xl flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </span>
+          <span class="font-display text-lg font-bold text-white">考试数据看板</span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <a href="/admin" class="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white backdrop-blur transition hover:bg-white/10">返回管理首页</a>
+          <a href="/admin/exam/manage" class="rounded-full border border-orange-safety/30 bg-orange-safety/10 px-4 py-2 text-sm font-medium text-orange-safety backdrop-blur transition hover:bg-orange-safety/20">考试管理</a>
+          <button id="logout-btn" class="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white backdrop-blur transition hover:bg-white/10">退出登录</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="pt-20 pb-12">
+      <div class="mx-auto max-w-7xl px-4">
+        <!-- 筛选栏 -->
+        <div class="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm mb-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-steel-400 mb-1">物流公司</label>
+              <select id="company-filter" class="w-full rounded-lg border border-white/10 bg-navy-950/50 px-3 py-2 text-sm text-white focus:border-orange-safety focus:outline-none">
+                <option value="">全部公司</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-steel-400 mb-1">考试科目</label>
+              <select id="project-filter" class="w-full rounded-lg border border-white/10 bg-navy-950/50 px-3 py-2 text-sm text-white focus:border-orange-safety focus:outline-none">
+                <option value="">全部科目</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-steel-400 mb-1">日期从</label>
+              <input type="date" id="date-from" class="w-full rounded-lg border border-white/10 bg-navy-950/50 px-3 py-2 text-sm text-white focus:border-orange-safety focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-steel-400 mb-1">日期到</label>
+              <input type="date" id="date-to" class="w-full rounded-lg border border-white/10 bg-navy-950/50 px-3 py-2 text-sm text-white focus:border-orange-safety focus:outline-none" />
+            </div>
+            <div class="flex items-end">
+              <button id="filter-btn" class="w-full rounded-lg border border-orange-safety bg-orange-safety/10 px-3 py-2 text-sm font-medium text-orange-safety transition hover:bg-orange-safety/20">查询统计</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 总体统计卡片 -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div class="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+            <div class="text-sm text-steel-400 mb-1">总考试次数</div>
+            <div id="stat-total" class="text-3xl font-bold text-white">0</div>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+            <div class="text-sm text-steel-400 mb-1">通过次数</div>
+            <div id="stat-passed" class="text-3xl font-bold text-green-400">0</div>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+            <div class="text-sm text-steel-400 mb-1">通过率</div>
+            <div id="stat-pass-rate" class="text-3xl font-bold text-blue-400">0%</div>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+            <div class="text-sm text-steel-400 mb-1">平均分数</div>
+            <div id="stat-avg-score" class="text-3xl font-bold text-orange-safety">0</div>
+          </div>
+        </div>
+
+        <!-- 详细统计表格 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <!-- 按物流公司统计 -->
+          <div class="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+            <h3 class="text-lg font-bold text-white mb-4">按物流公司统计</h3>
+            <div id="company-stats" class="space-y-3">
+              <div class="text-center py-8 text-steel-400">暂无考试记录</div>
+            </div>
+          </div>
+
+          <!-- 按考试科目统计 -->
+          <div class="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+            <h3 class="text-lg font-bold text-white mb-4">按考试科目统计</h3>
+            <div id="project-stats" class="space-y-3">
+              <div class="text-center py-8 text-steel-400">暂无考试记录</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 按日期统计 -->
+        <div class="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm mb-6">
+          <h3 class="text-lg font-bold text-white mb-4">按日期统计（最近30天）</h3>
+          <div id="date-stats" class="space-y-2">
+            <div class="text-center py-8 text-steel-400">暂无考试记录</div>
+          </div>
+        </div>
+
+        <!-- 考试记录列表 -->
+        <div class="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+          <h3 class="text-lg font-bold text-white mb-4">考试记录详情</h3>
+          <div id="records-list" class="space-y-3">
+            <div class="text-center py-8 text-steel-400">暂无考试记录</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      let currentUser = null;
+
+      async function checkAuth() {
+        try {
+          const res = await fetch('/api/auth/me');
+          const data = await res.json();
+          if (!data.success) {
+            window.location.href = '/admin/login';
+            return false;
+          }
+          currentUser = data.data;
+          return true;
+        } catch (error) {
+          window.location.href = '/admin/login';
+          return false;
+        }
+      }
+
+      async function loadStats() {
+        const company = document.getElementById('company-filter').value;
+        const projectId = document.getElementById('project-filter').value;
+        const dateFrom = document.getElementById('date-from').value;
+        const dateTo = document.getElementById('date-to').value;
+
+        let url = '/api/exam/stats?';
+        const params = [];
+        if (company) params.push('company=' + encodeURIComponent(company));
+        if (projectId) params.push('projectId=' + encodeURIComponent(projectId));
+        if (dateFrom) params.push('dateFrom=' + encodeURIComponent(dateFrom));
+        if (dateTo) params.push('dateTo=' + encodeURIComponent(dateTo));
+        url += params.join('&');
+
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+
+          if (!data.success) throw new Error(data.message);
+
+          const { overall, by_company, by_project, by_date, projects, companies } = data.data;
+
+          document.getElementById('stat-total').textContent = overall.total_count;
+          document.getElementById('stat-passed').textContent = overall.passed_count;
+          document.getElementById('stat-pass-rate').textContent = overall.pass_rate + '%';
+          document.getElementById('stat-avg-score').textContent = overall.avg_score;
+
+          const companySelect = document.getElementById('company-filter');
+          const currentCompanyValue = companySelect.value;
+          companySelect.innerHTML = '<option value="">全部公司</option>' + companies.map(c => '<option value="' + c.company + '">' + c.company + '</option>').join('');
+          companySelect.value = currentCompanyValue;
+
+          const projectSelect = document.getElementById('project-filter');
+          const currentProjectValue = projectSelect.value;
+          projectSelect.innerHTML = '<option value="">全部科目</option>' + projects.map(p => '<option value="' + p.id + '">' + p.name + '</option>').join('');
+          projectSelect.value = currentProjectValue;
+
+          const companyStatsDiv = document.getElementById('company-stats');
+          if (by_company.length === 0) {
+            companyStatsDiv.innerHTML = '<div class="text-center py-8 text-steel-400">暂无数据</div>';
+          } else {
+            companyStatsDiv.innerHTML = by_company.map(cs =>
+              '<div class="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">' +
+              '<div class="flex-1 min-w-0 mr-4">' +
+              '<div class="font-medium text-white truncate">' + cs.company + '</div>' +
+              '<div class="text-xs text-steel-400">' + cs.total_count + ' 次考试</div>' +
+              '</div>' +
+              '<div class="text-right">' +
+              '<div class="font-bold ' + (cs.pass_rate >= 80 ? 'text-green-400' : cs.pass_rate >= 60 ? 'text-yellow-400' : 'text-red-400') + '">' + cs.pass_rate + '%</div>' +
+              '<div class="text-xs text-steel-400">平均分 ' + cs.avg_score + '</div>' +
+              '</div>' +
+              '</div>'
+            ).join('');
+          }
+
+          const projectStatsDiv = document.getElementById('project-stats');
+          if (by_project.length === 0) {
+            projectStatsDiv.innerHTML = '<div class="text-center py-8 text-steel-400">暂无数据</div>';
+          } else {
+            projectStatsDiv.innerHTML = by_project.map(ps =>
+              '<div class="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">' +
+              '<div class="flex-1 min-w-0 mr-4">' +
+              '<div class="font-medium text-white truncate">' + (ps.project_name || '未命名科目') + '</div>' +
+              '<div class="text-xs text-steel-400">' + ps.total_count + ' 次考试</div>' +
+              '</div>' +
+              '<div class="text-right">' +
+              '<div class="font-bold ' + (ps.pass_rate >= 80 ? 'text-green-400' : ps.pass_rate >= 60 ? 'text-yellow-400' : 'text-red-400') + '">' + ps.pass_rate + '%</div>' +
+              '<div class="text-xs text-steel-400">平均分 ' + ps.avg_score + '</div>' +
+              '</div>' +
+              '</div>'
+            ).join('');
+          }
+
+          const dateStatsDiv = document.getElementById('date-stats');
+          if (by_date.length === 0) {
+            dateStatsDiv.innerHTML = '<div class="text-center py-8 text-steel-400">暂无数据</div>';
+          } else {
+            dateStatsDiv.innerHTML = by_date.map(ds =>
+              '<div class="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">' +
+              '<div class="text-white font-medium">' + ds.date + '</div>' +
+              '<div class="flex items-center gap-6 text-sm">' +
+              '<div class="text-steel-400">' + ds.total_count + ' 次考试</div>' +
+              '<div class="' + (ds.pass_rate >= 80 ? 'text-green-400' : ds.pass_rate >= 60 ? 'text-yellow-400' : 'text-red-400') + '">通过率 ' + ds.pass_rate + '%</div>' +
+              '<div class="text-orange-safety">平均分 ' + ds.avg_score + '</div>' +
+              '</div>' +
+              '</div>'
+            ).join('');
+          }
+
+          await loadRecords();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      async function loadRecords() {
+        const company = document.getElementById('company-filter').value;
+        const projectId = document.getElementById('project-filter').value;
+        const dateFrom = document.getElementById('date-from').value;
+        const dateTo = document.getElementById('date-to').value;
+
+        let url = '/api/exam/records?';
+        const params = [];
+        if (company) params.push('company=' + encodeURIComponent(company));
+        if (projectId) params.push('projectId=' + encodeURIComponent(projectId));
+        if (dateFrom) params.push('dateFrom=' + encodeURIComponent(dateFrom));
+        if (dateTo) params.push('dateTo=' + encodeURIComponent(dateTo));
+        url += params.join('&');
+
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+
+          if (!data.success) throw new Error(data.message);
+
+          const recordsListDiv = document.getElementById('records-list');
+          if (data.data.length === 0) {
+            recordsListDiv.innerHTML = '<div class="text-center py-8 text-steel-400">暂无考试记录</div>';
+          } else {
+            recordsListDiv.innerHTML = data.data.map(record =>
+              '<div class="p-4 rounded-lg bg-white/5 border border-white/10">' +
+              '<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">' +
+              '<div>' +
+              '<div class="flex items-center gap-3">' +
+              '<span class="font-medium text-white">' + record.name + '</span>' +
+              '<span class="text-steel-400">@ ' + record.company + '</span>' +
+              (record.position ? '<span class="text-xs text-steel-500">' + record.position + '</span>' : '') +
+              '</div>' +
+              '<div class="text-sm text-steel-400">' +
+              (record.project_name || '未命名科目') + ' · ' + new Date(record.created_at).toLocaleString() +
+              '</div>' +
+              '</div>' +
+              '<div class="text-right">' +
+              '<div class="text-lg font-bold ' + (record.passed ? 'text-green-400' : 'text-red-400') + '">' + record.score + '/' + record.total_score + '</div>' +
+              '<div class="text-xs ' + (record.passed ? 'text-green-400' : 'text-red-400') + '">' + (record.passed ? '通过' : '未通过') + ' · ' + record.duration + '分钟</div>' +
+              '</div>' +
+              '</div>' +
+              '</div>'
+            ).join('');
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      async function logout() {
+        if (!confirm('确定要退出登录吗？')) return;
+        try {
+          await fetch('/api/auth/logout', { method: 'POST' });
+          window.location.href = '/admin/login';
+        } catch (error) {
+          alert('登出失败');
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', async () => {
+        const isLoggedIn = await checkAuth();
+        if (!isLoggedIn) return;
+
+        await loadStats();
+
+        document.getElementById('logout-btn').addEventListener('click', logout);
+        document.getElementById('filter-btn').addEventListener('click', loadStats);
+      });
+    </script>
+  </body>
+</html>

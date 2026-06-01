@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "framework": "astro",
+  "installCommand": "npm install",
+  "regions": ["hkg1"],
+  "version": 2
+}

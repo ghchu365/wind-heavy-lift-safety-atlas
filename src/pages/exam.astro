@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+import { ExamSystem } from '../components/ExamSystem';
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="风电运输安全知识考试" />
+    <title>安全考试 - 风电大件运输安全知识中心</title>
+  </head>
+  <body class="bg-navy-950 min-h-screen">
+    <!-- 顶部导航 -->
+    <header class="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/10 bg-navy-950/72 px-4 py-3 shadow-2xl shadow-black/30 backdrop-blur-xl sm:px-5">
+        <a href="/" class="group flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-orange-safety focus:ring-offset-2 focus:ring-offset-navy-950">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M4.5 7.5 12 12l7.5-4.5M5 17l7-5 7 5"/><circle cx="12" cy="12" r="2.2"/></svg>
+          </span>
+          <span>
+            <span class="block font-display text-sm font-bold tracking-[0.16em] text-white sm:text-base">风电大件运输安全知识中心</span>
+            <span class="hidden font-mono text-[10px] uppercase tracking-[0.28em] text-steel-400 sm:block">Heavy-Lift Safety Atlas</span>
+          </span>
+        </a>
+        <a href="/" class="hidden min-h-11 items-center rounded-full bg-white/5 px-4 py-2 text-sm font-bold text-white backdrop-blur transition hover:bg-white/10 sm:inline-flex">返回首页</a>
+      </nav>
+    </header>
+
+    <main class="pt-28 pb-16">
+      <div class="mx-auto max-w-5xl px-4 sm:px-6">
+        <!-- 页面标题 -->
+        <div class="text-center mb-6">
+          <h1 class="font-display text-4xl font-black leading-tight tracking-[-0.03em] text-white sm:text-5xl">
+            风电运输安全考试
+          </h1>
+          <p class="mt-4 text-lg leading-8 text-stele-300">
+            考试说明：共25题，满分100分，<span class="text-orange-safety font-bold">80分合格</span>。
+            题型包括单选题、多选题和判断题。请在<span class="text-cyan-wind font-bold">60分钟</span>内完成作答。
+          </p>
+        </div>
+
+        <!-- 考试系统 -->
+        <ExamSystem client:load />
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,605 @@
+---
+import '../../styles/global.css';
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="后台管理" />
+    <title>数据列表 - 安全检查管理系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/viewerjs@1.11.6/dist/viewer.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/viewerjs@1.11.6/dist/viewer.min.css" />
+  </head>
+  <body class="bg-navy-950 min-h-screen">
+    <!-- 顶部导航 -->
+    <header class="fixed left-0 right-0 top-0 z-50 px-4 py-3 bg-navy-950/90 backdrop-blur-xl border-b border-white/10">
+      <div class="mx-auto max-w-7xl flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v2h8z" />
+            </svg>
+          </span>
+          <span class="font-display text-lg font-bold text-white">安全检查管理系统</span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <span id="user-info" class="text-sm text-steel-300"></span>
+          <button
+            id="logout-btn"
+            class="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white backdrop-blur transition hover:bg-white/10"
+          >
+            退出登录
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="pt-20 pb-12">
+      <div class="mx-auto max-w-7xl px-4">
+        <!-- 快捷导航 -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <a href="/admin" class="p-4 rounded-xl border border-orange-safety/30 bg-orange-safety/10 text-orange-safety text-center font-medium transition hover:bg-orange-safety/20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            </svg>
+            安全检查记录
+          </a>
+          <a href="/admin/exam/dashboard" class="p-4 rounded-xl border border-white/10 bg-white/5 text-white text-center font-medium transition hover:bg-white/10 hover:border-orange-safety/30">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            考试数据看板
+          </a>
+          <a href="/admin/exam/manage" class="p-4 rounded-xl border border-white/10 bg-white/5 text-white text-center font-medium transition hover:bg-white/10 hover:border-orange-safety/30">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            考试管理
+          </a>
+        </div>
+        <!-- 顶部操作栏 -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-white">安全检查记录</h1>
+            <p class="mt-1 text-steel-400">查看和管理所有提交的安全检查记录</p>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button
+              id="select-current-page-btn"
+              class="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold text-white backdrop-blur transition hover:border-orange-safety/40 hover:bg-orange-safety/10 hover:text-orange-safety disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled
+            >
+              全选当前页
+            </button>
+            <button
+              id="download-selected-btn"
+              class="rounded-full bg-orange-safety px-4 py-2 text-sm font-bold text-navy-950 shadow-lg shadow-orange-safety/25 transition hover:bg-orange-safetyLight disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled
+            >
+              批量下载选中
+            </button>
+          </div>
+        </div>
+
+        <!-- 筛选栏 -->
+        <div class="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm mb-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-steel-400 mb-1">类型筛选</label>
+              <select id="type-filter" class="w-full rounded-lg border border-white/10 bg-navy-950/50 px-3 py-2 text-sm text-white focus:border-orange-safety focus:outline-none">
+                <option value="">全部</option>
+                <option value="安全检查">安全检查</option>
+                <option value="安全培训">安全培训</option>
+                <option value="应急演练">应急演练</option>
+                <option value="其他">其他</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-steel-400 mb-1">日期从</label>
+              <input type="date" id="date-from" class="w-full rounded-lg border border-white/10 bg-navy-950/50 px-3 py-2 text-sm text-white focus:border-orange-safety focus:outline-none" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-steel-400 mb-1">至</label>
+              <input type="date" id="date-to" class="w-full rounded-lg border border-white/10 bg-navy-950/50 px-3 py-2 text-sm text-white focus:border-orange-safety focus:outline-none" />
+            </div>
+
+            <div class="flex items-end">
+              <button id="filter-btn" class="w-full rounded-lg border border-orange-safety bg-orange-safety/10 px-3 py-2 text-sm font-medium text-orange-safety transition hover:bg-orange-safety/20">
+                筛选
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 列表 -->
+        <div id="records-list" class="space-y-4">
+          <div class="text-center py-12 text-steel-400">加载中...</div>
+        </div>
+
+        <!-- 分页 -->
+        <div id="pagination" class="mt-8 flex justify-center items-center gap-2 hidden">
+          <button id="prev-page" class="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white transition hover:border-orange-safety hover:text-orange-safety disabled:opacity-50">
+            上一页
+          </button>
+          <span id="page-info" class="text-sm text-steel-400 px-2"></span>
+          <button id="next-page" class="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white transition hover:border-orange-safety hover:text-orange-safety disabled:opacity-50">
+            下一页
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- 详情模态框 -->
+    <div id="detail-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+      <div class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-navy-950 shadow-2xl">
+        <button id="close-detail" class="absolute top-4 right-4 rounded-full bg-white/5 p-2 text-steel-400 hover:text-white transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <div id="detail-content" class="p-6">
+          <div class="text-center py-8 text-steel-400">加载中...</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentPage = 1;
+      let pageSize = 10;
+      let totalPages = 0;
+      let selectedIds = new Set();
+      let currentUser = null;
+
+      // 获取当前筛选/当前页可见记录ID
+      function getVisibleRecordIds() {
+        return Array.from(document.querySelectorAll('.record-checkbox')).map((checkbox) =>
+          parseInt((checkbox as HTMLInputElement).value)
+        );
+      }
+
+      function updateSelectAllButton() {
+        const btn = document.getElementById('select-current-page-btn') as HTMLButtonElement;
+        if (!btn) return;
+
+        const visibleIds = getVisibleRecordIds();
+        const hasVisibleRecords = visibleIds.length > 0;
+        const allVisibleSelected = hasVisibleRecords && visibleIds.every((id) => selectedIds.has(id));
+
+        btn.disabled = !hasVisibleRecords;
+        btn.textContent = allVisibleSelected ? `取消全选 (${visibleIds.length})` : `全选当前页 (${visibleIds.length})`;
+      }
+
+      function toggleSelectCurrentPage() {
+        const visibleCheckboxes = Array.from(document.querySelectorAll('.record-checkbox')) as HTMLInputElement[];
+        const visibleIds = visibleCheckboxes.map((checkbox) => parseInt(checkbox.value));
+        if (visibleIds.length === 0) return;
+
+        const allVisibleSelected = visibleIds.every((id) => selectedIds.has(id));
+
+        visibleCheckboxes.forEach((checkbox) => {
+          const id = parseInt(checkbox.value);
+          if (allVisibleSelected) {
+            selectedIds.delete(id);
+            checkbox.checked = false;
+          } else {
+            selectedIds.add(id);
+            checkbox.checked = true;
+          }
+        });
+
+        updateDownloadButton();
+      }
+
+      // 清空当前勾选状态，避免筛选/翻页后下载到不可见的旧记录
+      function clearSelection() {
+        selectedIds.clear();
+        document.querySelectorAll('.record-checkbox').forEach((checkbox) => {
+          (checkbox as HTMLInputElement).checked = false;
+        });
+        updateDownloadButton();
+      }
+
+      // 校验登录状态
+      async function checkAuth() {
+        try {
+          const res = await fetch('/api/auth/me');
+          const data = await res.json();
+          if (!data.success) {
+            window.location.href = '/admin/login';
+            return false;
+          }
+          currentUser = data.data;
+          document.getElementById('user-info')!.textContent = `当前用户：${currentUser.username}（${currentUser.role === 'admin' ? '管理员' : '普通用户'}）`;
+
+          // 只有管理员显示批量操作按钮
+          if (currentUser.role !== 'admin') {
+            document.getElementById('select-current-page-btn')!.remove();
+            document.getElementById('download-selected-btn')!.remove();
+          }
+
+          return true;
+        } catch (error) {
+          window.location.href = '/admin/login';
+          return false;
+        }
+      }
+
+      // 加载数据
+      async function loadRecords() {
+        const typeFilter = (document.getElementById('type-filter') as HTMLSelectElement).value;
+        const dateFrom = (document.getElementById('date-from') as HTMLInputElement).value;
+        const dateTo = (document.getElementById('date-to') as HTMLInputElement).value;
+
+        const listContainer = document.getElementById('records-list')!;
+        listContainer.innerHTML = '<div class="text-center py-12 text-steel-400">加载中...</div>';
+
+        try {
+          let url = `/api/records/list?page=${currentPage}&pageSize=${pageSize}`;
+          if (typeFilter) url += `&type=${encodeURIComponent(typeFilter)}`;
+          if (dateFrom) url += `&dateFrom=${encodeURIComponent(dateFrom)}`;
+          if (dateTo) url += `&dateTo=${encodeURIComponent(dateTo)}`;
+
+          const res = await fetch(url);
+          const data = await res.json();
+
+          if (!data.success) {
+            throw new Error(data.message);
+          }
+
+          const { list, pagination } = data.data;
+          totalPages = pagination.totalPages;
+
+          if (list.length === 0) {
+            selectedIds.clear();
+            updateDownloadButton();
+            listContainer.innerHTML = '<div class="text-center py-12 text-steel-400">暂无数据</div>';
+            document.getElementById('pagination')!.classList.add('hidden');
+            return;
+          }
+
+          // 渲染列表
+          listContainer.innerHTML = list.map((record) => `
+            <div class="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm transition hover:border-orange-safety/30 hover:bg-white/8">
+              <div class="p-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                  <div class="flex items-center gap-3">
+                    ${currentUser.role === 'admin' ? `
+                      <input type="checkbox" value="${record.id}" ${selectedIds.has(record.id) ? 'checked' : ''} class="record-checkbox rounded border-white/30 bg-white/5 text-orange-safety focus:ring-orange-safety" />
+                    ` : ''}
+                    <h3 class="text-lg font-bold text-white">${record.project_name}</h3>
+                    <span class="rounded-full px-2 py-0.5 text-xs font-medium ${record.type === '安全检查' ? 'bg-blue-500/20 text-blue-400' : record.type === '安全培训' ? 'bg-green-500/20 text-green-400' : record.type === '应急演练' ? 'bg-purple-500/20 text-purple-400' : 'bg-gray-500/20 text-gray-400'}">
+                      ${record.type}
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-sm text-steel-400">${new Date(record.created_at).toLocaleString()}</span>
+                    <button data-id="${record.id}" class="view-detail-btn rounded-full border border-orange-safety/30 bg-orange-safety/10 px-3 py-1 text-sm font-medium text-orange-safety transition hover:bg-orange-safety/20">
+                      查看详情
+                    </button>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 text-sm">
+                  <div>
+                    <div class="text-steel-500 text-xs">检查日期</div>
+                    <div class="text-white">${record.check_date}</div>
+                  </div>
+                  <div>
+                    <div class="text-steel-500 text-xs">物流公司</div>
+                    <div class="text-white">${record.logistics_company}</div>
+                  </div>
+                  <div>
+                    <div class="text-steel-500 text-xs">执行人员</div>
+                    <div class="text-white">${record.operator}</div>
+                  </div>
+                  <div>
+                    <div class="text-steel-500 text-xs">检查地点</div>
+                    <div class="text-white">${record.location}</div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <div class="text-steel-500 text-xs mb-1">描述</div>
+                  <div class="text-steel-300 text-sm line-clamp-2">${record.description}</div>
+                </div>
+              </div>
+            </div>
+          `).join('');
+
+          // 绑定查看详情事件
+          document.querySelectorAll('.view-detail-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const id = btn.getAttribute('data-id');
+              openDetail(id!);
+            });
+          });
+
+          // 绑定选择框事件
+          if (currentUser.role === 'admin') {
+            document.querySelectorAll('.record-checkbox').forEach(checkbox => {
+              checkbox.addEventListener('change', () => {
+                const id = parseInt(checkbox.value);
+                if ((checkbox as HTMLInputElement).checked) {
+                  selectedIds.add(id);
+                } else {
+                  selectedIds.delete(id);
+                }
+                updateDownloadButton();
+              });
+            });
+          }
+
+          // 同步批量操作按钮状态
+          updateDownloadButton();
+
+          // 更新分页
+          document.getElementById('pagination')!.classList.remove('hidden');
+          document.getElementById('page-info')!.textContent = `第 ${currentPage} / ${totalPages} 页，共 ${pagination.total} 条记录`;
+          (document.getElementById('prev-page') as HTMLButtonElement).disabled = currentPage <= 1;
+          (document.getElementById('next-page') as HTMLButtonElement).disabled = currentPage >= totalPages;
+
+        } catch (error) {
+          listContainer.innerHTML = `<div class="text-center py-12 text-red-400">加载失败：${error instanceof Error ? error.message : '未知错误'}</div>`;
+        }
+      }
+
+      // 打开详情
+      async function openDetail(id) {
+        const modal = document.getElementById('detail-modal')!;
+        const content = document.getElementById('detail-content')!;
+        modal.classList.remove('hidden');
+        content.innerHTML = '<div class="text-center py-8 text-steel-400">加载中...</div>';
+
+        try {
+          const res = await fetch(`/api/records/${id}`);
+          const data = await res.json();
+
+          if (!data.success) {
+            throw new Error(data.message);
+          }
+
+          const record = data.data;
+
+          content.innerHTML = `
+            <div class="mb-6">
+              <div class="flex items-center gap-3 mb-2">
+                <h2 class="text-2xl font-bold text-white">${record.project_name}</h2>
+                <span class="rounded-full px-2 py-0.5 text-xs font-medium ${record.type === '安全检查' ? 'bg-blue-500/20 text-blue-400' : record.type === '安全培训' ? 'bg-green-500/20 text-green-400' : record.type === '应急演练' ? 'bg-purple-500/20 text-purple-400' : 'bg-gray-500/20 text-gray-400'}">
+                  ${record.type}
+                </span>
+              </div>
+              <p class="text-steel-400">提交时间：${new Date(record.created_at).toLocaleString()}</p>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+              <div>
+                <div class="text-steel-500 text-xs mb-1">检查日期</div>
+                <div class="text-white">${record.check_date}</div>
+              </div>
+              <div>
+                <div class="text-steel-500 text-xs mb-1">物流公司</div>
+                <div class="text-white">${record.logistics_company}</div>
+              </div>
+              <div>
+                <div class="text-steel-500 text-xs mb-1">执行人员</div>
+                <div class="text-white">${record.operator}</div>
+              </div>
+              <div>
+                <div class="text-steel-500 text-xs mb-1">检查地点</div>
+                <div class="text-white">${record.location}</div>
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <div class="text-steel-500 text-xs mb-1">详细描述</div>
+              <div class="text-steel-300 whitespace-pre-wrap p-3 rounded-lg bg-white/5 border border-white/10">
+                ${record.description}
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="text-white font-medium">附件（${record.files.length}个）</div>
+                ${currentUser.role === 'admin' ? `
+                  <button data-id="${record.id}" class="download-record-btn rounded-full border border-orange-safety/30 bg-orange-safety/10 px-3 py-1 text-sm font-medium text-orange-safety transition hover:bg-orange-safety/20">
+                    下载全部附件
+                  </button>
+                ` : ''}
+              </div>
+
+              <div id="detail-files" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                ${record.files.map((file) => `
+                  <div class="group rounded-lg border border-white/10 bg-white/5 overflow-hidden">
+                    ${file.type.startsWith('image/') ? `
+                      <img src="${file.url}" alt="${file.name}" class="w-full aspect-square object-cover cursor-pointer hover:scale-105 transition" />
+                    ` : `
+                      <div class="w-full aspect-square flex flex-col items-center justify-center p-2 bg-white/5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-steel-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        <p class="text-xs text-steel-300 text-center truncate w-full">${file.name}</p>
+                      </div>
+                    `}
+                    <div class="p-2 border-t border-white/10">
+                      <a href="${file.url}" target="_blank" class="text-xs text-orange-safety hover:text-orange-safetyLight">
+                        查看原文件
+                      </a>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+
+          // 初始化图片预览
+          const viewer = new Viewer(document.getElementById('detail-files')!, {
+            url: 'src',
+            toolbar: true,
+          });
+
+          // 绑定单条记录下载事件
+          if (currentUser.role === 'admin') {
+            const downloadBtn = content.querySelector('.download-record-btn') as HTMLButtonElement;
+            downloadBtn.addEventListener('click', () => {
+              const id = downloadBtn.getAttribute('data-id');
+              downloadRecords([parseInt(id!)], downloadBtn, '下载全部附件');
+            });
+          }
+
+        } catch (error) {
+          content.innerHTML = `<div class="text-center py-8 text-red-400">加载失败：${error instanceof Error ? error.message : '未知错误'}</div>`;
+        }
+      }
+
+      // 批量下载
+      async function downloadRecords(ids, triggerButton = null, defaultButtonText = '批量下载选中') {
+        if (ids.length === 0) {
+          alert('请选择要下载的记录');
+          return;
+        }
+
+        const isBatchDownload = ids.length > 1;
+        const confirmText = isBatchDownload
+          ? `确定要下载选中的 ${ids.length} 条记录的所有附件吗？`
+          : '确定要下载这条记录的所有附件吗？';
+
+        if (!confirm(confirmText)) {
+          return;
+        }
+
+        const btn = triggerButton || document.getElementById('download-selected-btn') as HTMLButtonElement;
+        const originalText = btn ? btn.textContent : defaultButtonText;
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = '打包中...';
+        }
+
+        try {
+          const res = await fetch('/api/records/download', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ids }),
+          });
+
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.message || '下载失败');
+          }
+
+          // 获取blob并下载
+          const blob = await res.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `安全检查资料_${new Date().toISOString().slice(0, 10)}.zip`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+
+          alert('下载成功');
+          if (!triggerButton) {
+            clearSelection();
+          }
+        } catch (error) {
+          alert(`下载失败：${error instanceof Error ? error.message : '未知错误'}`);
+        } finally {
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = originalText;
+          }
+          if (!triggerButton) {
+            updateDownloadButton();
+          }
+        }
+      }
+
+      // 更新下载按钮状态
+      function updateDownloadButton() {
+        const btn = document.getElementById('download-selected-btn') as HTMLButtonElement;
+        if (btn) {
+          btn.disabled = selectedIds.size === 0;
+          btn.textContent = selectedIds.size > 0 ? `批量下载选中 (${selectedIds.size})` : '批量下载选中';
+        }
+        updateSelectAllButton();
+      }
+
+      // 登出
+      async function logout() {
+        if (!confirm('确定要退出登录吗？')) {
+          return;
+        }
+
+        try {
+          await fetch('/api/auth/logout', { method: 'POST' });
+          window.location.href = '/admin/login';
+        } catch (error) {
+          alert('登出失败');
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', async () => {
+        // 先校验登录
+        const isLoggedIn = await checkAuth();
+        if (!isLoggedIn) return;
+
+        // 加载数据
+        await loadRecords();
+
+        // 绑定事件
+        document.getElementById('logout-btn')!.addEventListener('click', logout);
+
+        document.getElementById('filter-btn')!.addEventListener('click', () => {
+          currentPage = 1;
+          clearSelection();
+          loadRecords();
+        });
+
+        document.getElementById('prev-page')!.addEventListener('click', () => {
+          if (currentPage > 1) {
+            currentPage--;
+            clearSelection();
+            loadRecords();
+          }
+        });
+
+        document.getElementById('next-page')!.addEventListener('click', () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            clearSelection();
+            loadRecords();
+          }
+        });
+
+        document.getElementById('close-detail')!.addEventListener('click', () => {
+          document.getElementById('detail-modal')!.classList.add('hidden');
+        });
+
+        // 点击模态框背景关闭
+        document.getElementById('detail-modal')!.addEventListener('click', (e) => {
+          if (e.target === document.getElementById('detail-modal')) {
+            document.getElementById('detail-modal')!.classList.add('hidden');
+          }
+        });
+
+        // 批量操作
+        if (currentUser.role === 'admin') {
+          document.getElementById('select-current-page-btn')!.addEventListener('click', toggleSelectCurrentPage);
+          document.getElementById('download-selected-btn')!.addEventListener('click', () => {
+            const ids = Array.from(selectedIds);
+            downloadRecords(ids, null, '批量下载选中');
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

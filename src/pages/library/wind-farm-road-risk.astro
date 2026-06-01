@@ -1,0 +1,129 @@
+---
+import '../../styles/global.css';
+import { SiteParticles } from '../../components/SiteParticles';
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="风场道路通行风险识别：路基宽度评估、纵坡和横坡分析、回头弯转弯半径计算、涵洞承载力复核、排水系统检查和临时道路方案。" />
+    <meta name="theme-color" content="#040E1A" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="风场道路通行风险识别｜风电大件运输安全知识中心" />
+    <meta property="og:description" content="风场道路通行风险识别：路基宽度评估、纵坡和横坡分析、回头弯转弯半径计算、涵洞承载力复核、排水系统检查和临时道路方案。" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://example.com/library/wind-farm-road-risk" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="风场道路通行风险识别｜风电大件运输安全知识中心" />
+    <meta name="twitter:description" content="路基宽度评估、纵坡横坡分析、回头弯转弯半径计算、涵洞承载力复核、排水系统检查和临时道路方案。" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "风场道路通行风险识别",
+        "description": "风场道路通行风险识别：路基宽度评估、纵坡和横坡分析、回头弯转弯半径计算、涵洞承载力复核、排水系统检查和临时道路方案。",
+        "inLanguage": "zh-CN",
+        "about": ["Wind Farm", "Road Risk", "Heavy-Lift Transport"],
+        "proficiencyLevel": "Expert"
+      }
+    </script>
+
+    <title>风场道路通行风险识别｜风电大件运输安全知识中心</title>
+  </head>
+  <body class="pb-20">
+    <SiteParticles client:load />
+    <header class="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/10 bg-navy-950/72 px-4 py-3 shadow-2xl shadow-black/30 backdrop-blur-xl sm:px-5">
+        <a href="/" class="flex items-center gap-3">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M4.5 7.5 12 12l7.5-4.5M5 17l7-5 7 5"/><circle cx="12" cy="12" r="2.2"/></svg>
+          </span>
+          <span class="font-display text-sm font-bold text-white sm:text-base">知识库</span>
+        </a>
+        <a href="/#library" class="text-sm text-steel-400 transition hover:text-white">← 返回知识库</a>
+      </nav>
+    </header>
+
+    <main class="pt-28">
+      <article class="container-article">
+        <p class="section-kicker">Wind Farm Road Risk Assessment</p>
+        <h1 class="mt-5 font-display text-4xl font-black leading-tight tracking-[-0.03em] text-white sm:text-5xl xl:text-6xl">风场道路通行风险识别</h1>
+        <p class="mt-5 text-base leading-7 text-steel-400">路基宽度 · 坡道分析 · 回头弯 · 涵洞承载 · 排水检查 · 临时道路</p>
+
+        <div class="mt-10 h-px bg-gradient-to-r from-orange-safety/50 via-white/20 to-transparent"></div>
+
+        <div class="article-body">
+          <h2>一、概述</h2>
+          <p>风场场内道路（wind farm access road）与国道、省道、县道等公共道路有本质区别。场内道路通常为专用施工道路，按施工期重型车辆通行需求设计，设计标准低于公共道路，且建成后的养护维护水平参差不齐。</p>
+          <p>大件运输车辆驶入风场道路后，面对的将是<strong>更窄的路基、更急的弯道、更陡的纵坡和更软的路面基层</strong>。风场道路通行风险评估应作为大件运输路线勘察的独立阶段，以 "<strong>进得去、出得来、转得过、停得住</strong>" 为核心目标。</p>
+
+          <h2>二、路基宽度评估</h2>
+          <p>风场道路的路基宽度通常在 4.5–6.0 米之间（设计车速 15–20 km/h 的标准）。对于叶片运输车辆（总宽 4.5–5.5 米加上扫尾空间），可用的有效通行宽度往往不足。</p>
+
+          <h3>评估方法</h3>
+          <ul>
+            <li><strong>理论计算：</strong>车辆最大宽度 W_veh + 安全间隙（每侧 ≥ 0.5 米）+ 扫尾偏移量 S_tail ≤ 路面有效宽度 W_road。</li>
+            <li><strong>现场实测：</strong>使用激光测距仪或无人机航拍测绘精确获取道路全线的宽度变化，特别注意桥头、涵洞进出口和挖方路段的宽度缩窄。</li>
+            <li><strong>会车点规划：</strong>在大件运输车辆通行期间，所有对向车辆应避让。每 500–800 米应设置一个会车避让加宽段（长度 ≥ 20 米，宽度 ≥ 7 米）。</li>
+          </ul>
+
+          <h2>三、坡道分析</h2>
+          <p>山区风场的道路纵坡往往超出一般公路的设计标准。大件运输车辆在陡坡路段面临驱动力不足（上坡）和制动性能超限（下坡）的双重风险。</p>
+
+          <div class="highlight-box">
+            <p><strong>坡度阈值：</strong>纵坡超过 8% 的路段应进行专项牵引力验算；超过 12% 的路段一般不建议大件运输车辆通行（需另行评估牵引车附加配置或绞盘辅助方案）。</p>
+          </div>
+
+          <h3>关键检查项</h3>
+          <ul>
+            <li><strong>上坡路段：</strong>验算牵引车在该坡度下的剩余牵引力是否满足安全加速和坡道起步要求。必要时配置前置或后置辅助牵引车。</li>
+            <li><strong>下坡路段：</strong>验算制动系统在下坡全程的制动温升是否在设计范围内。下长坡应采用发动机辅助制动、液力缓速器与行车制动联合使用。</li>
+            <li><strong>坡底转弯组合：</strong>坡底紧接小半径弯道的路段是最危险的组合工况，车辆在纵坡和横坡的复合作用下极易侧滑或倾覆。</li>
+          </ul>
+
+          <h2>四、回头弯与转弯半径</h2>
+          <p>风场道路中的回头弯（switchback turn）是叶片和塔筒运输中最大的通行障碍。回头弯的内缘半径通常只有 12–20 米，远小于大件运输车辆所需的转弯半径。</p>
+
+          <ul>
+            <li><strong>R 值要求：</strong>长度 ≥ 80 米的叶片运输车辆，其最小转弯半径通常需要 ≥ 45 米（视车辆铰接形式和工装类型而定）。</li>
+            <li><strong>拓宽方案：</strong>在转弯半径不满足要求的回头弯，可通过拓宽弯道内缘（土方开挖）或使用液压转向工装减少转弯半径。</li>
+            <li><strong>路径修正：</strong>利用弯道外侧路肩和加宽带扩大行驶轨迹包络线，但前提是路肩承载力满足要求。</li>
+          </ul>
+
+          <h2>五、涵洞与排水设施</h2>
+          <p>风场道路沿线分布大量排水涵洞和横向排水管，这些设施的覆土厚度和结构强度通常不足以承受大件运输车辆的集中轴荷。</p>
+
+          <ul>
+            <li><strong>覆土厚度检查：</strong>涵洞顶部最小覆土厚度不应小于 1.0 米，不足时应填土保护或铺设钢板。</li>
+            <li><strong>结构复核：</strong>对于管径 ≥ 1.0 米的重要涵洞，应进行结构承载力验算。</li>
+            <li><strong>临时保护：</strong>在涵洞上方通行时，铺设路基箱板（crane mat / ground protection mat）分散轮压。</li>
+          </ul>
+
+          <h2>六、临时道路方案</h2>
+          <p>当既有风场道路无法满足大件运输要求时，修建临时道路或临时加宽段是常见的技术方案：</p>
+          <ul>
+            <li><strong>路基处理：</strong>清除表层软土，回填级配碎石，压实度 ≥ 93%。</li>
+            <li><strong>路面结构：</strong>铺设 20–30 cm 级配碎石基层 + 钢板或路基箱面板。</li>
+            <li><strong>转弯加宽：</strong>弯道内缘加宽 2–4 米，加宽段长度 ≥ 转弯弧长 + 20 米过渡段。</li>
+            <li><strong>临时排水：</strong>临时道路施工期间不得阻断既有排水系统，应设置临时边沟或排水管保障排水畅通。</li>
+          </ul>
+
+          <h2>七、总结</h2>
+          <p>风场道路通行风险评估是大件运输中最需要 "下车走路" 的环节。坐在办公室里看图纸和听汇报无法发现路面下的空洞、涵洞的暗裂和弯道内侧的岩石露头。建议每次重大运输前，由路线工程师带队对风场道路进行一次全程徒步踏勘，逐段记录风险等级，形成量化的通行能力评估报告。</p>
+        </div>
+
+        <div class="mt-16 flex items-center justify-between border-t border-white/10 pt-8">
+          <a href="/library/nacelle-lashing" class="text-sm text-steel-400 transition hover:text-white">← 上一篇：机舱装卸与绑扎固定方法</a>
+          <a href="/library/port-transshipment-safety" class="text-sm text-orange-safety transition hover:text-orange-safetyLight">下一篇：港口转运与临时堆场安全 →</a>
+        </div>
+      </article>
+    </main>
+  </body>
+</html>

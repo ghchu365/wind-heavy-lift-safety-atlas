@@ -1,0 +1,111 @@
+---
+import '../../styles/global.css';
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="后台登录" />
+    <title>后台登录 - 安全检查管理系统</title>
+  </head>
+  <body class="bg-navy-950 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md px-4">
+      <div class="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center h-16 w-16 rounded-xl border border-orange-safety/40 bg-orange-safety/10 text-orange-safety mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v2h8z" />
+            </svg>
+          </div>
+          <h1 class="text-3xl font-bold text-white">后台登录</h1>
+          <p class="mt-2 text-steel-400">请输入用户名和密码登录</p>
+        </div>
+
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-white mb-2">用户名</label>
+            <input
+              name="username"
+              type="text"
+              required
+              class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20"
+              placeholder="默认：admin"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-white mb-2">密码</label>
+            <input
+              name="password"
+              type="password"
+              required
+              class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20"
+              placeholder="默认：admin123"
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="w-full rounded-full bg-orange-safety px-6 py-3 text-sm font-bold text-navy-950 shadow-lg shadow-orange-safety/25 transition hover:bg-orange-safetyLight"
+          >
+            登录
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // 如果已经登录，直接跳转到列表页
+        fetch('/api/auth/me')
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              window.location.href = '/admin';
+            }
+          })
+          .catch(() => {});
+
+        const form = document.getElementById('login-form') as HTMLFormElement;
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const formData = new FormData(form);
+          const data = {
+            username: formData.get('username') as string,
+            password: formData.get('password') as string,
+          };
+
+          const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+          const originalText = submitBtn.textContent;
+          submitBtn.disabled = true;
+          submitBtn.textContent = '登录中...';
+
+          try {
+            const res = await fetch('/api/auth/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+            });
+
+            const result = await res.json();
+
+            if (result.success) {
+              window.location.href = '/admin';
+            } else {
+              alert(`登录失败：${result.message}`);
+            }
+          } catch (error) {
+            alert(`登录失败：${error instanceof Error ? error.message : '网络错误'}`);
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

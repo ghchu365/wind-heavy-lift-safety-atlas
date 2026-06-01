@@ -1,0 +1,767 @@
+---
+import '../styles/global.css';
+import { HeroParticles } from '../components/HeroParticles';
+import { SiteParticles } from '../components/SiteParticles';
+import { MobileNav } from '../components/MobileNav';
+import { KnowledgeLibrarySection } from '../components/KnowledgeLibrarySection';
+import { initDB } from '../lib/db';
+
+// 服务端渲染获取事故案例
+let accidentCases = [];
+try {
+  const db = initDB();
+  const result = await db.execute('SELECT * FROM accident_cases ORDER BY date DESC');
+  accidentCases = result.rows;
+} catch (e) {
+  console.error('Failed to load cases:', e);
+}
+
+const equipment = [
+  {
+    title: '风机叶片运输',
+    eyebrow: 'Blade Transport',
+    metric: '80–120m',
+    description: '超长叶片对转弯半径、道路净空、侧风窗口和尾部扫摆控制要求极高，是风电大件运输中最具路线挑战的品类。',
+    points: ['转弯半径模拟', '侧风窗口判断', '叶尖扫摆监测'],
+  },
+  {
+    title: '塔筒分段运输',
+    eyebrow: 'Tower Sections',
+    metric: '60–90t',
+    description: '塔筒运输关注重心、支撑鞍座、桥梁承载、坡道路段制动与多车协同，适合建立标准化检查模型。',
+    points: ['桥梁承载复核', '鞍座受力检查', '坡道制动预案'],
+  },
+  {
+    title: '机舱与发电机',
+    eyebrow: 'Nacelle Logistics',
+    metric: '100t+',
+    description: '机舱重量集中、价值高，装卸吊点、运输震动、绑扎冗余与港口转运衔接决定交付安全边界。',
+    points: ['吊点受力核查', '震动监测', '绑扎冗余设计'],
+  },
+  {
+    title: '轮毂与关键组件',
+    eyebrow: 'Hub Components',
+    metric: '精密件',
+    description: '轮毂、轴承、控制柜等关键组件更重视防护、标识、吊装顺序和现场交接验收，避免隐性损伤。',
+    points: ['防护包装', '交接验收', '吊装顺序控制'],
+  },
+];
+
+const process = [
+  ['01', '工厂装车', '核对吊点、鞍座、重心线、绑扎角度与车辆轴线，形成装车前安全确认。'],
+  ['02', '路线勘察', '复核桥梁、涵洞、弯道、坡度、净空、临时拆改点与交通组织方案。'],
+  ['03', '特种车辆配置', '根据长度、重量和路况选择伸缩板车、液压轴线车或自走式模块车。'],
+  ['04', '道路通行控制', '执行护送、封控、低速转弯、实时通讯和关键节点二次确认机制。'],
+  ['05', '港口与风场转运', '管理码头吊装、堆场临存、二次绑扎、风场道路会车与吊装交付。'],
+];
+
+const risks = [
+  ['侧风', '高', '叶片受风面积大，需设定停运风速阈值与实时气象监测。'],
+  ['弯道扫尾', '高', '超长构件尾部侵入对向车道、护栏或山体，需要路径仿真。'],
+  ['桥梁承载', '中', '塔筒与机舱重量集中，必须复核轴荷、桥梁等级与通行速度。'],
+  ['绑扎失效', '高', '急刹、坡道、横风可能导致位移，需双重冗余与途中复检。'],
+  ['夜间通行', '中', '视距、照明、公众交通干扰增加，需要警示车与节点封控。'],
+  ['吊装交接', '高', '吊点、索具、风速、站位和指挥链错误会放大成重大事故。'],
+];
+
+const knowledge = [
+  { title: '叶片运输路线勘察指南', desc: '转弯半径、道路净空、桥梁承载与侧风窗口的系统勘察方法。', slug: 'blade-route-survey' },
+  { title: '塔筒运输桥梁承载核查', desc: '塔筒运输中对桥梁等级、轴荷分布与通行速度的核查流程。', slug: 'tower-bridge-load' },
+  { title: '机舱装卸与绑扎固定方法', desc: '吊点、减震、绑扎冗余与途中检查的核心技术要求。', slug: 'nacelle-lashing' },
+  { title: '风场道路通行风险识别', desc: '路基宽度、坡度、排水与临时道路方案的风险评估。', slug: 'wind-farm-road-risk' },
+  { title: '港口转运与临时堆场安全', desc: '码头吊装、二次绑扎、堆场管理与天气防护措施。', slug: 'port-transshipment-safety' },
+  { title: '恶劣天气运输窗口判断', desc: '风速、能见度、路面状态与综合天气预报的安全窗口管理。', slug: 'weather-window-assessment' },
+];
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="风电大件运输安全知识中心，系统介绍风机叶片、塔筒、机舱等大件设备物流运输、路线勘察、绑扎固定、风险控制与安全作业知识。" />
+    <meta name="theme-color" content="#040E1A" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="风电大件运输安全知识中心" />
+    <meta property="og:description" content="系统解析叶片、塔筒、机舱等风电大件设备从工厂到风场的运输路径、风险控制、绑扎固定与安全作业标准，为工程团队建立可执行的知识地图。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://example.com" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="风电大件运输安全知识中心" />
+    <meta name="twitter:description" content="系统解析叶片、塔筒、机舱等风电大件设备从工厂到风场的运输路径、风险控制、绑扎固定与安全作业标准。" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "风电大件运输安全知识中心",
+        "description": "风电大件设备物流运输、路线勘察、绑扎固定、风险控制与安全作业知识库",
+        "inLanguage": "zh-CN",
+        "about": ["Wind Power", "Heavy-Lift Transport", "Logistics Safety", "Wind Turbine"]
+      }
+    </script>
+
+    <title>风电大件运输安全知识中心｜风电物流与安全知识库</title>
+  </head>
+  <body>
+    <SiteParticles client:load />
+    <header class="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/10 bg-navy-950/72 px-4 py-3 shadow-2xl shadow-black/30 backdrop-blur-xl sm:px-5" aria-label="主导航">
+        <a href="#top" class="group flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-orange-safety focus:ring-offset-2 focus:ring-offset-navy-950">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M4.5 7.5 12 12l7.5-4.5M5 17l7-5 7 5"/><circle cx="12" cy="12" r="2.2"/></svg>
+          </span>
+          <span>
+            <span class="block font-display text-sm font-bold tracking-[0.16em] text-white sm:text-base">风电大件运输安全知识中心</span>
+            <span class="hidden font-mono text-[10px] uppercase tracking-[0.28em] text-steel-400 sm:block">Heavy-Lift Safety Atlas</span>
+          </span>
+        </a>
+        <div class="hidden items-center gap-7 text-sm text-steel-300 md:flex">
+          <a href="#library" class="transition hover:text-white">知识库</a>
+          <a href="#route" class="transition hover:text-white">运输流程</a>
+          <a href="#risk" class="transition hover:text-white">风险矩阵</a>
+          <a href="#safety-report" class="transition hover:text-white">安全检查和培训</a>
+          <a href="/exam" class="transition text-orange-safety hover:text-orange-safetyLight font-bold">安全考试</a>
+          <a href="#cases" class="transition hover:text-white">事故案例</a>
+        </div>
+        <MobileNav client:load />
+        <a href="/exam" class="hidden min-h-11 items-center rounded-full bg-orange-safety px-4 py-2 text-sm font-bold text-navy-950 shadow-lg shadow-orange-safety/25 transition hover:bg-orange-safetyLight focus:outline-none focus:ring-2 focus:ring-orange-safety focus:ring-offset-2 focus:ring-offset-navy-950 sm:inline-flex">开始考试</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <!-- ============ HERO ============ -->
+      <section class="relative min-h-screen overflow-hidden pb-20 pt-32 sm:pt-40 lg:pt-44">
+        <HeroParticles client:load />
+        <div class="absolute inset-0 -z-10">
+          <div class="absolute left-1/2 top-28 h-[32rem] w-[72rem] -translate-x-1/2 rounded-full bg-cyan-wind/12 blur-3xl"></div>
+          <div class="absolute right-[-12rem] top-24 h-[34rem] w-[34rem] rounded-full bg-orange-safety/10 blur-3xl"></div>
+          <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-navy-950 to-transparent"></div>
+        </div>
+
+        <div class="container-x grid items-center gap-14 lg:grid-cols-[1.02fr_0.98fr]">
+          <div class="relative z-10">
+            <p class="section-kicker opacity-0 animate-stagger-1">Wind Power Heavy-Lift Logistics</p>
+            <h1 class="mt-6 max-w-4xl font-display text-5xl font-black leading-[1.15] tracking-[-0.05em] opacity-0 animate-stagger-2 sm:text-7xl lg:text-8xl">
+              <span class="headline-gradient">风电大件运输</span><br />
+              <span class="text-white">安全知识中心</span>
+            </h1>
+            <p class="mt-8 max-w-2xl text-lg leading-8 text-steel-300 opacity-0 animate-stagger-3 sm:text-xl">
+              系统解析叶片、塔筒、机舱等风电大件设备从工厂到风场的运输路径、风险控制、绑扎固定与安全作业标准，为工程团队建立可执行的知识地图。
+            </p>
+            <div class="mt-10 flex flex-col gap-4 opacity-0 animate-stagger-4 sm:flex-row">
+              <a href="#route" class="inline-flex min-h-12 items-center justify-center rounded-full bg-orange-safety px-6 py-3 font-bold text-navy-950 shadow-xl shadow-orange-safety/25 transition hover:-translate-y-0.5 hover:bg-orange-safetyLight focus:outline-none focus:ring-2 focus:ring-orange-safety focus:ring-offset-2 focus:ring-offset-navy-950">浏览运输流程</a>
+              <a href="#risk" class="inline-flex min-h-12 items-center justify-center rounded-full border border-white/15 bg-white/5 px-6 py-3 font-bold text-white backdrop-blur transition hover:-translate-y-0.5 hover:border-cyan-wind/50 hover:bg-cyan-wind/10 focus:outline-none focus:ring-2 focus:ring-cyan-wind focus:ring-offset-2 focus:ring-offset-navy-950">查看风险矩阵</a>
+            </div>
+
+            <div class="mt-14 grid max-w-2xl grid-cols-3 gap-3 opacity-0 animate-fade-up [animation-delay:0.55s]">
+              <div class="glass-panel rounded-2xl p-4 technical-border">
+                <div class="font-display text-2xl font-bold text-white">120m</div>
+                <div class="mt-1.5 text-xs text-steel-400">超长叶片路径模拟</div>
+              </div>
+              <div class="glass-panel rounded-2xl p-4 technical-border">
+                <div class="font-display text-2xl font-bold text-white">24h</div>
+                <div class="mt-1.5 text-xs text-steel-400">运输窗口安全复核</div>
+              </div>
+              <div class="glass-panel rounded-2xl p-4 technical-border">
+                <div class="font-display text-2xl font-bold text-white">HSE</div>
+                <div class="mt-1.5 text-xs text-steel-400">全流程检查清单</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- REDRAWN SVG - CINEMATIC ROUTE MONITOR -->
+          <div class="relative min-h-[420px] opacity-0 animate-fade-in [animation-delay:0.3s] sm:min-h-[560px]">
+            <div class="absolute inset-0 rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-white/10 via-white/[0.03] to-transparent shadow-2xl shadow-black/40 backdrop-blur-sm"></div>
+            <div class="absolute inset-5 overflow-hidden rounded-[2rem] border border-white/10 bg-navy-950/60">
+              <div class="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-cyan-wind/10 to-transparent"></div>
+              <div class="absolute left-5 top-5 z-20 font-mono text-[10px] uppercase tracking-[0.32em] text-cyan-wind sm:left-6 sm:top-6">Transport Monitoring / CN-WIND-09</div>
+
+              <svg class="absolute inset-0 h-full w-full" viewBox="0 0 640 560" role="img" aria-label="风电大件运输路线监控中心">
+                <defs>
+                  <radialGradient id="monitorGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#22D3EE" stop-opacity="0.08"/>
+                    <stop offset="100%" stop-color="#22D3EE" stop-opacity="0"/>
+                  </radialGradient>
+                  <linearGradient id="routeGlow" x1="0" y1="1" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#22D3EE" stop-opacity="0.4"/>
+                    <stop offset="40%" stop-color="#94A3B8" stop-opacity="0.5"/>
+                    <stop offset="75%" stop-color="#F97316" stop-opacity="0.7"/>
+                    <stop offset="100%" stop-color="#F97316" stop-opacity="1"/>
+                  </linearGradient>
+                  <linearGradient id="trailGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#22D3EE"/>
+                    <stop offset="50%" stop-color="#F97316"/>
+                    <stop offset="100%" stop-color="#F97316"/>
+                  </linearGradient>
+                  <filter id="svgGlow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                  <filter id="strongGlow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                  <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#071C37"/>
+                    <stop offset="48%" stop-color="#0A2946"/>
+                    <stop offset="100%" stop-color="#0B1F3A"/>
+                  </linearGradient>
+                  <linearGradient id="ridgeGreen" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#8CE36A" stop-opacity="0.18"/>
+                    <stop offset="55%" stop-color="#22C55E" stop-opacity="0.10"/>
+                    <stop offset="100%" stop-color="#0F3B2F" stop-opacity="0.32"/>
+                  </linearGradient>
+                  <linearGradient id="roadDeck" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#475569" stop-opacity="0.42"/>
+                    <stop offset="50%" stop-color="#1E293B" stop-opacity="0.88"/>
+                    <stop offset="100%" stop-color="#020617" stop-opacity="0.92"/>
+                  </linearGradient>
+                  <linearGradient id="bladeBody" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#E5E7EB"/>
+                    <stop offset="55%" stop-color="#CBD5E1"/>
+                    <stop offset="100%" stop-color="#F8FAFC"/>
+                  </linearGradient>
+                  <linearGradient id="redTractor" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#F97316"/>
+                    <stop offset="45%" stop-color="#DC2626"/>
+                    <stop offset="100%" stop-color="#7F1D1D"/>
+                  </linearGradient>
+                  <pattern id="gridPattern" width="32" height="32" patternUnits="userSpaceOnUse">
+                    <path d="M 32 0 L 0 0 0 32" fill="none" stroke="rgba(148,163,184,0.07)" stroke-width="0.5"/>
+                  </pattern>
+                </defs>
+
+                <!-- Background -->
+                <rect width="640" height="560" fill="url(#skyGrad)"/>
+                <rect width="640" height="560" fill="url(#gridPattern)"/>
+                <rect width="640" height="560" fill="url(#monitorGlow)"/>
+
+                <!-- Deep blue sky + live-monitor overlay -->
+                <rect width="640" height="560" fill="url(#skyGrad)"/>
+                <rect width="640" height="560" fill="url(#gridPattern)"/>
+                <rect width="640" height="560" fill="url(#monitorGlow)"/>
+
+                <!-- Blue daylight glow inspired by the reference photo, toned down for industrial dark UI -->
+                <ellipse cx="355" cy="98" rx="270" ry="110" fill="rgba(125,211,252,0.12)"/>
+                <ellipse cx="320" cy="480" rx="340" ry="120" fill="rgba(34,211,238,0.04)"/>
+
+                <!-- Layered green mountain ridges from blade-transport reference -->
+                <g>
+                  <path d="M0 178 C52 138 98 126 148 144 C208 166 244 112 300 132 C356 152 398 96 462 118 C528 142 574 106 640 124 L640 560 L0 560Z" fill="url(#ridgeGreen)"/>
+                  <path d="M0 246 C70 216 118 232 172 212 C242 188 286 226 350 198 C432 162 498 210 560 184 C596 168 620 166 640 170 L640 560 L0 560Z" fill="rgba(34,197,94,0.075)"/>
+                  <path d="M0 330 C84 298 148 314 220 292 C300 268 358 308 432 274 C510 238 570 272 640 250 L640 560 L0 560Z" fill="rgba(15,118,110,0.12)"/>
+                </g>
+
+                <!-- Engineering contour lines over the mountains -->
+                <g fill="none" stroke="rgba(34,211,238,0.08)" stroke-width="1">
+                  <path d="M0 230 Q80 196 150 218 Q230 180 310 205 Q380 175 455 196 Q535 174 640 190"/>
+                  <path d="M0 272 Q100 244 176 260 Q258 226 338 248 Q420 218 500 240 Q572 218 640 232"/>
+                  <path d="M0 350 Q120 326 210 340 Q302 310 390 330 Q480 300 560 318 Q604 310 640 318"/>
+                </g>
+
+                <!-- Mountain road deck, perspective bend -->
+                <path d="M-30 528 C80 474 142 430 214 402 C288 374 374 346 492 292 C550 266 598 244 670 210 L700 560 L-40 560Z"
+                      fill="url(#roadDeck)" stroke="rgba(148,163,184,0.25)" stroke-width="1.5"/>
+                <path d="M40 506 C124 462 174 430 238 404 C330 366 420 324 566 244"
+                      fill="none" stroke="rgba(203,213,225,0.28)" stroke-width="2" stroke-dasharray="28,22" stroke-linecap="round"/>
+                <path d="M15 534 C122 484 190 446 276 410 C380 366 470 322 620 246"
+                      fill="none" stroke="rgba(249,115,22,0.22)" stroke-width="1.5" stroke-dasharray="8,10"/>
+
+                <!-- Road / Route base path aligned to the mountain road -->
+                <path d="M52 506 C118 470, 158 430, 224 402 S 350 350, 410 316 S 505 270, 590 226"
+                      fill="none" stroke="rgba(148,163,184,0.15)" stroke-width="3" stroke-linecap="round"/>
+
+                <!-- Animated route glow trail -->
+                <path d="M52 506 C118 470, 158 430, 224 402 S 350 350, 410 316 S 505 270, 590 226"
+                      fill="none" stroke="url(#trailGrad)" stroke-width="3.5" stroke-linecap="round"
+                      stroke-dasharray="900" stroke-dashoffset="900" class="animate-path-draw" filter="url(#svgGlow)"/>
+
+                <!-- Speed limit sign from reference photo, rendered as HUD-aware roadside marker -->
+                <g transform="translate(505,218) rotate(-10)" class="animate-float" style="animation-duration:7s">
+                  <line x1="0" y1="38" x2="0" y2="88" stroke="rgba(203,213,225,0.55)" stroke-width="3"/>
+                  <circle cx="0" cy="20" r="20" fill="rgba(241,245,249,0.95)" stroke="#EF4444" stroke-width="5"/>
+                  <text x="0" y="26" text-anchor="middle" fill="#0F172A" font-size="16" font-family="JetBrains Mono,monospace" font-weight="800">40</text>
+                  <text x="0" y="-12" text-anchor="middle" fill="#F97316" font-size="7" font-family="JetBrains Mono,monospace">LIMIT</text>
+                </g>
+
+                <!-- Route waypoints -->
+                <!-- WP 1: Factory -->
+                <g>
+                  <circle cx="62" cy="498" r="12" fill="rgba(34,211,238,0.15)" stroke="#22D3EE" stroke-width="2"/>
+                  <circle cx="62" cy="498" r="4" fill="#22D3EE" filter="url(#svgGlow)"/>
+                  <text x="62" y="524" text-anchor="middle" fill="#94A3B8" font-size="8" font-family="JetBrains Mono,monospace">WP-01</text>
+                  <text x="62" y="536" text-anchor="middle" fill="#6B7280" font-size="7" font-family="JetBrains Mono,monospace">FACTORY</text>
+                </g>
+                <!-- WP 2: Bridge -->
+                <g>
+                  <circle cx="222" cy="402" r="10" fill="rgba(34,211,238,0.15)" stroke="#22D3EE" stroke-width="1.5"/>
+                  <circle cx="222" cy="402" r="3.5" fill="#22D3EE" filter="url(#svgGlow)"/>
+                  <text x="222" y="424" text-anchor="middle" fill="#94A3B8" font-size="8" font-family="JetBrains Mono,monospace">WP-02</text>
+                  <text x="222" y="436" text-anchor="middle" fill="#6B7280" font-size="7" font-family="JetBrains Mono,monospace">CURVE</text>
+                </g>
+                <!-- WP 3: Mountain Pass -->
+                <g>
+                  <circle cx="408" cy="317" r="10" fill="rgba(249,115,22,0.2)" stroke="#F97316" stroke-width="1.5"/>
+                  <circle cx="408" cy="317" r="3.5" fill="#F97316" filter="url(#svgGlow)"/>
+                  <text x="408" y="338" text-anchor="middle" fill="#94A3B8" font-size="8" font-family="JetBrains Mono,monospace">WP-03</text>
+                  <text x="408" y="350" text-anchor="middle" fill="#F97316" font-size="7" font-family="JetBrains Mono,monospace">LOW SPEED</text>
+                </g>
+                <!-- WP 4: Highway -->
+                <g>
+                  <circle cx="590" cy="226" r="10" fill="rgba(34,211,238,0.15)" stroke="#22D3EE" stroke-width="1.5"/>
+                  <circle cx="590" cy="226" r="3.5" fill="#22D3EE" filter="url(#svgGlow)"/>
+                  <text x="590" y="248" text-anchor="middle" fill="#94A3B8" font-size="8" font-family="JetBrains Mono,monospace">WP-04</text>
+                  <text x="590" y="260" text-anchor="middle" fill="#6B7280" font-size="7" font-family="JetBrains Mono,monospace">MOUNTAIN</text>
+                </g>
+                <!-- WP 5: Wind Farm -->
+                <g>
+                  <circle cx="548" cy="112" r="12" fill="rgba(249,115,22,0.25)" stroke="#F97316" stroke-width="2"/>
+                  <circle cx="548" cy="112" r="4" fill="#F97316" filter="url(#strongGlow)"/>
+                  <text x="548" y="138" text-anchor="middle" fill="#94A3B8" font-size="8" font-family="JetBrains Mono,monospace">WP-05</text>
+                  <text x="548" y="150" text-anchor="middle" fill="#F97316" font-size="7" font-family="JetBrains Mono,monospace">WIND FARM</text>
+                </g>
+
+                <!-- Blade tooling transport vehicle: red tractor + modular blade fixture trailer -->
+                <g class="animate-float" style="animation-delay:0.5s;animation-duration:5.5s" transform="translate(166,364) rotate(-14)">
+                  <!-- long turbine blade mounted on tooling frame -->
+                  <path d="M-14 16 C68 3 154 -4 262 -11 C284 -12 304 -10 318 -7 C298 -4 274 -2 250 0 C148 8 68 18 -12 28 Z"
+                        fill="url(#bladeBody)" stroke="rgba(248,250,252,0.95)" stroke-width="1.4" filter="url(#svgGlow)"/>
+                  <path d="M5 23 C76 13 158 5 246 -1" fill="none" stroke="rgba(15,23,42,0.22)" stroke-width="1"/>
+                  <!-- orange safety outriggers / supports -->
+                  <g stroke="#F97316" stroke-width="2" stroke-linecap="round" filter="url(#svgGlow)">
+                    <line x1="48" y1="31" x2="48" y2="50"/>
+                    <line x1="128" y1="20" x2="128" y2="44"/>
+                    <line x1="214" y1="10" x2="214" y2="35"/>
+                  </g>
+                  <!-- trailer frame -->
+                  <rect x="38" y="44" width="196" height="14" rx="3" fill="#0F172A" stroke="rgba(148,163,184,0.75)" stroke-width="1"/>
+                  <rect x="58" y="37" width="38" height="10" rx="2" fill="rgba(249,115,22,0.22)" stroke="#F97316" stroke-width="1"/>
+                  <rect x="150" y="31" width="42" height="10" rx="2" fill="rgba(249,115,22,0.18)" stroke="#F97316" stroke-width="1"/>
+                  <!-- tractor cab -->
+                  <g transform="translate(-6,36)">
+                    <rect x="0" y="7" width="48" height="24" rx="5" fill="url(#redTractor)" stroke="rgba(254,215,170,0.75)" stroke-width="1"/>
+                    <path d="M9 7 L22 -8 H40 L45 7 Z" fill="url(#redTractor)" stroke="rgba(254,215,170,0.7)" stroke-width="1"/>
+                    <path d="M24 -5 H38 L42 7 H18 Z" fill="rgba(125,211,252,0.35)" stroke="rgba(186,230,253,0.6)" stroke-width="0.8"/>
+                    <rect x="-8" y="19" width="11" height="8" rx="2" fill="#F97316"/>
+                  </g>
+                  <!-- wheels -->
+                  <g fill="#020617" stroke="#94A3B8" stroke-width="1.2">
+                    <circle cx="20" cy="70" r="8"/>
+                    <circle cx="69" cy="64" r="6"/>
+                    <circle cx="102" cy="64" r="6"/>
+                    <circle cx="172" cy="64" r="6"/>
+                    <circle cx="212" cy="64" r="6"/>
+                  </g>
+                  <g fill="#64748B">
+                    <circle cx="20" cy="70" r="2.2"/>
+                    <circle cx="69" cy="64" r="1.8"/>
+                    <circle cx="102" cy="64" r="1.8"/>
+                    <circle cx="172" cy="64" r="1.8"/>
+                    <circle cx="212" cy="64" r="1.8"/>
+                  </g>
+                  <!-- low-speed escort label -->
+                  <rect x="250" y="28" width="82" height="22" rx="5" fill="rgba(4,14,26,0.72)" stroke="rgba(249,115,22,0.45)"/>
+                  <text x="291" y="42" text-anchor="middle" fill="#F97316" font-size="8" font-family="JetBrains Mono,monospace" font-weight="700">BLADE FIXTURE</text>
+                </g>
+
+                <!-- Distance arcs between waypoints -->
+                <g stroke="rgba(148,163,184,0.08)" stroke-width="0.5" fill="none" stroke-dasharray="2,3">
+                  <path d="M90 470 Q140 430 160 410"/>
+                  <path d="M230 365 Q280 335 310 315"/>
+                  <path d="M390 265 Q430 230 440 210"/>
+                  <path d="M510 145 Q550 120 560 105"/>
+                </g>
+
+                <!-- Data overlay - top right telemetry panel -->
+                <g transform="translate(420, 32)">
+                  <rect width="130" height="80" rx="6" fill="rgba(4,14,26,0.7)" stroke="rgba(249,115,22,0.25)" stroke-width="0.8"/>
+                  <text x="10" y="18" fill="#22D3EE" font-size="7" font-family="JetBrains Mono,monospace" font-weight="bold">CARGO TELEMETRY</text>
+                  <text x="10" y="34" fill="#94A3B8" font-size="7" font-family="JetBrains Mono,monospace">LENGTH  <tspan fill="#F97316">87.4 m</tspan></text>
+                  <text x="10" y="46" fill="#94A3B8" font-size="7" font-family="JetBrains Mono,monospace">WEIGHT  <tspan fill="#F97316">68.2 t</tspan></text>
+                  <text x="10" y="58" fill="#94A3B8" font-size="7" font-family="JetBrains Mono,monospace">CLEAR  <tspan fill="#22D3EE">2.3 m</tspan></text>
+                  <text x="10" y="70" fill="#94A3B8" font-size="7" font-family="JetBrains Mono,monospace">WIND  <tspan fill="#F97316">7.2 m/s</tspan></text>
+                </g>
+
+                <!-- Status indicator - bottom left -->
+                <g transform="translate(16, 440)">
+                  <rect width="120" height="70" rx="6" fill="rgba(4,14,26,0.7)" stroke="rgba(34,211,238,0.2)" stroke-width="0.8"/>
+                  <text x="10" y="18" fill="#22D3EE" font-size="7" font-family="JetBrains Mono,monospace" font-weight="bold">MISSION STATUS</text>
+                  <circle cx="14" cy="35" r="3" fill="#22D3EE" filter="url(#svgGlow)"/>
+                  <text x="24" y="38" fill="#94A3B8" font-size="7" font-family="JetBrains Mono,monospace">ROUTE  <tspan fill="#22D3EE">ACTIVE</tspan></text>
+                  <circle cx="14" cy="50" r="3" fill="#F97316" filter="url(#svgGlow)"/>
+                  <text x="24" y="53" fill="#94A3B8" font-size="7" font-family="JetBrains Mono,monospace">RISK  <tspan fill="#F97316">MEDIUM</tspan></text>
+                  <text x="10" y="65" fill="#6B7280" font-size="6" font-family="JetBrains Mono,monospace">ESCORT: VEH-03 ACTIVE</text>
+                </g>
+
+                <!-- HUD corner decorations -->
+                <g stroke="rgba(34,211,238,0.2)" fill="none" stroke-width="1.5">
+                  <path d="M0 20 L0 0 L20 0"/>
+                  <path d="M620 0 L640 0 L640 20"/>
+                  <path d="M0 540 L0 560 L20 560"/>
+                  <path d="M640 540 L640 560 L620 560"/>
+                </g>
+
+                <!-- Scanning line effect (subtle horizontal scanning indicator) -->
+                <line x1="0" y1="180" x2="640" y2="180" stroke="rgba(34,211,238,0.08)" stroke-width="1" class="animate-scan-line">
+                  <animate attributeName="y1" from="0" to="560" dur="8s" repeatCount="indefinite"/>
+                  <animate attributeName="y2" from="0" to="560" dur="8s" repeatCount="indefinite"/>
+                </line>
+
+                <!-- Bottom-right legend -->
+                <g transform="translate(470, 500)">
+                  <text x="0" y="0" fill="#4B5563" font-size="7" font-family="JetBrains Mono,monospace">DATA UPDATED: REAL-TIME</text>
+                  <text x="0" y="12" fill="#4B5563" font-size="7" font-family="JetBrains Mono,monospace">SYSTEM: WIND LOGISTICS v2.4</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 事故案例库 ============ -->
+      <div class="section-divider my-6 container-x" aria-hidden="true"></div>
+      <section id="cases" class="py-20 sm:py-28">
+        <div class="container-x">
+          <div class="max-w-4xl reveal">
+            <p class="section-kicker">Accident Case Study</p>
+            <h2 class="mt-5 font-display text-3xl font-black leading-tight tracking-[-0.03em] text-white sm:text-4xl xl:text-5xl">血的教训，警钟长鸣。</h2>
+            <p class="mt-6 max-w-3xl text-lg leading-8 text-steel-300">真实的事故案例是最好的教材。从他人的教训中汲取经验，才能更好地防范类似事故的再次发生。</p>
+          </div>
+          <div class="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {accidentCases.length === 0 ? (
+              <div class="col-span-full text-center py-12 text-steel-400">暂无事故案例</div>
+            ) : accidentCases.map((c) => {
+              const severityClass = c.severity === '重大' ? 'bg-red-500/20 text-red-400' : 'bg-orange-500/20 text-orange-400';
+              const severityBorder = c.severity === '重大' ? 'border-l-red-500' : 'border-l-orange-500';
+              return (
+                <article class={`rounded-3xl border border-white/10 bg-white/5 p-6 border-l-4 ${severityBorder} hover:-translate-y-1 transition reveal-scale`}>
+                  <div class="flex items-center justify-between mb-3">
+                    <span class={`rounded-full px-3 py-1 text-xs font-bold ${severityClass}`}>{c.severity}</span>
+                    <span class="text-xs text-steel-500">{c.date || ''}</span>
+                  </div>
+                  <h3 class="font-display text-lg font-bold text-white mb-2">{c.title}</h3>
+                  <p class="text-sm text-steel-400 mb-3">{c.location || ''}</p>
+                  <p class="text-sm text-steel-300 line-clamp-3">{c.description}</p>
+                  <button onclick={`showCaseDetail(${c.id})`} class="mt-4 text-sm text-orange-safety hover:text-orange-safetyLight font-medium">查看详情 →</button>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <script>
+        window.showCaseDetail = async function(id) {
+          try {
+            const res = await fetch(`/api/knowledge/cases?id=${id}`);
+            const data = await res.json();
+            const casesData = Array.isArray(data.data) ? data.data[0] : data.data;
+            if (!casesData) {
+              alert('案例不存在');
+              return;
+            }
+            const c = casesData;
+            const severityClass = c.severity === '重大' ? 'bg-red-500/20 text-red-400 border-red-500' : 'bg-orange-500/20 text-orange-400 border-orange-500';
+
+            const modal = document.createElement('div');
+            modal.id = 'case-modal';
+            modal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm';
+            modal.innerHTML = `
+              <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-white/10 bg-navy-950 p-8 relative">
+                <button onclick="closeCaseModal()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 text-white hover:bg-white/20 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+                <span class="inline-block rounded-full px-3 py-1 text-xs font-bold ${severityClass} border mb-4">${c.severity}</span>
+                <h2 class="text-2xl font-black text-white mb-2">${c.title}</h2>
+                <p class="text-sm text-steel-500 mb-6">${c.location || ''} | ${c.date || ''}</p>
+                <div class="space-y-6 text-steel-300">
+                  <div>
+                    <h3 class="text-sm font-bold text-orange-safety mb-2">事故经过</h3>
+                    <p class="leading-7">${c.description}</p>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-orange-safety mb-2">原因分析</h3>
+                    <p class="leading-7">${c.causes || c.cause || '暂无'}</p>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-orange-safety mb-2">经验教训</h3>
+                    <p class="leading-7">${c.lessons || '暂无'}</p>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-orange-safety mb-2">预防措施</h3>
+                    <p class="leading-7">${c.prevention}</p>
+                  </div>
+                </div>
+              </div>
+            `;
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => {
+              if (e.target === modal) closeCaseModal();
+            });
+          } catch (error) {
+            console.error('加载案例详情失败:', error);
+            alert('加载失败，请重试');
+          }
+        };
+
+        window.closeCaseModal = function() {
+          const modal = document.getElementById('case-modal');
+          if (modal) modal.remove();
+        };
+
+        loadAccidentCases();
+      </script>
+
+      <!-- ============ ROUTE PLAYBOOK ============ -->
+      <div class="section-divider my-6 container-x" aria-hidden="true"></div>
+      <section id="route" class="relative overflow-hidden py-20 sm:py-28">
+        <div class="container-x">
+          <div class="grid gap-14 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+            <div class="lg:sticky lg:top-32 reveal-left">
+              <p class="section-kicker">Transport Route Playbook</p>
+              <h2 class="mt-5 font-display text-3xl font-black leading-tight tracking-[-0.03em] text-white sm:text-4xl xl:text-5xl">从工厂门口到风场吊装点的全流程知识地图。</h2>
+              <p class="mt-6 text-lg leading-8 text-steel-300">把运输任务拆成可检查、可复核、可交接的工程节点，让每一次大件运输都能沉淀为组织能力。</p>
+            </div>
+            <div class="relative">
+              <div class="absolute left-4 top-0 hidden h-full w-px bg-gradient-to-b from-cyan-wind via-orange-safety to-transparent sm:block"></div>
+              <div class="space-y-6">
+                {process.map(([num, title, desc], index) => (
+                  <article class="glass-panel group relative rounded-3xl p-6 transition hover:border-cyan-wind/40 sm:ml-14 reveal-right" style={`transition-delay: ${index * 0.1}s`}>
+                    <div class="absolute -left-[4.6rem] top-6 hidden sm:block"><span class="route-node">{num}</span></div>
+                    <div class="flex items-center gap-4 sm:hidden"><span class="route-node">{num}</span><h3 class="font-display text-2xl font-bold text-white">{title}</h3></div>
+                    <h3 class="hidden font-display text-2xl font-bold text-white sm:block">{title}</h3>
+                    <p class="mt-4 leading-8 text-steel-300">{desc}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ RISK MATRIX ============ -->
+      <div class="section-divider my-6 container-x" aria-hidden="true"></div>
+      <section id="risk" class="py-20 sm:py-28">
+        <div class="container-x">
+          <div class="mb-14 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+            <div class="max-w-3xl reveal">
+              <p class="section-kicker">Safety Risk Matrix</p>
+              <h2 class="mt-5 font-display text-3xl font-black leading-tight tracking-[-0.03em] text-white sm:text-4xl xl:text-5xl">把"经验判断"转化为风险矩阵。</h2>
+            </div>
+            <p class="max-w-xl text-lg leading-8 text-steel-300 reveal" style="transition-delay: 0.15s">知识型网站的价值在于降低不确定性。这里将风电大件运输中的典型风险拆成可识别、可记录、可预防的控制项。</p>
+          </div>
+          <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {risks.map(([name, level, desc], index) => {
+              const isHigh = level === '高';
+              return (
+                <article class={`rounded-3xl border p-6 shadow-2xl backdrop-blur transition hover:-translate-y-1 reveal-scale ${isHigh ? 'border-l-4 border-l-orange-safety border-white/10 bg-navy-950/40 shadow-orange-safety/5' : 'border-l-4 border-l-cyan-wind/50 border-white/10 bg-navy-950/30 shadow-cyan-wind/5'}`} style={`transition-delay: ${index * 0.08}s`}>
+                  <div class="flex items-center justify-between gap-4">
+                    <h3 class="font-display text-2xl font-bold text-white">{name}</h3>
+                    <span class={`shrink-0 rounded-full px-3 py-1 font-mono text-xs font-bold ${isHigh ? 'bg-orange-safety text-navy-950' : 'border border-cyan-wind/40 text-cyan-wind'}`}>{level}风险</span>
+                  </div>
+                  <p class="mt-4 leading-7 text-steel-300">{desc}</p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 安全检查和培训 ============ -->
+      <div class="section-divider my-6 container-x" aria-hidden="true"></div>
+      <section id="safety-report" class="py-20 sm:py-28">
+        <div class="container-x">
+          <div class="max-w-4xl reveal">
+            <p class="section-kicker">SAFETY MANAGEMENT</p>
+            <h2 class="mt-5 font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-white sm:text-4xl xl:text-5xl">安全检查和培训</h2>
+            <p class="mt-6 max-w-3xl text-lg leading-8 text-steel-300">
+              规范安全检查流程、提升人员安全意识、强化应急处置能力，建立完善的安全管理体系，保障风电大件运输全过程安全。
+            </p>
+          </div>
+
+          <div class="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            <!-- 安全检查 -->
+            <a href="/form-demo?type=安全检查" class="group glass-panel rounded-3xl p-7 transition duration-300 hover:-translate-y-2 hover:border-orange-safety/45 reveal-scale">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <span class="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-wind">MODULE / 01</span>
+              </div>
+              <h3 class="font-display text-2xl font-bold text-white">安全检查</h3>
+              <p class="mt-4 leading-7 text-steel-300">
+                定期对运输车辆、设备、道路、作业流程进行安全检查，及时发现和消除安全隐患，防范事故发生。
+              </p>
+              <div class="mt-6 flex items-center text-sm font-medium text-orange-safety group-hover:text-orange-safetyLight">
+                立即申报
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </div>
+            </a>
+
+            <!-- 安全培训 -->
+            <a href="/form-demo?type=安全培训" class="group glass-panel rounded-3xl p-7 transition duration-300 hover:-translate-y-2 hover:border-orange-safety/45 reveal-scale" style="transition-delay: 0.1s">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                    <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.95 11.95 0 0012 20.055a11.95 11.95 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.95 11.95 0 0012 20.055a11.95 11.95 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                  </svg>
+                </div>
+                <span class="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-wind">MODULE / 02</span>
+              </div>
+              <h3 class="font-display text-2xl font-bold text-white">安全培训</h3>
+              <p class="mt-4 leading-7 text-steel-300">
+                开展安全操作规范、应急处置知识、风险识别能力等培训，提升从业人员安全意识和专业技能。
+              </p>
+              <div class="mt-6 flex items-center text-sm font-medium text-orange-safety group-hover:text-orange-safetyLight">
+                立即申报
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </div>
+            </a>
+
+            <!-- 应急演练 -->
+            <a href="/form-demo?type=应急演练" class="group glass-panel rounded-3xl p-7 transition duration-300 hover:-translate-y-2 hover:border-orange-safety/45 reveal-scale" style="transition-delay: 0.2s">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <span class="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-wind">MODULE / 03</span>
+              </div>
+              <h3 class="font-display text-2xl font-bold text-white">应急演练</h3>
+              <p class="mt-4 leading-7 text-steel-300">
+                组织开展各类应急场景演练，检验应急预案可行性，提升应急处置能力和协同配合水平。
+              </p>
+              <div class="mt-6 flex items-center text-sm font-medium text-orange-safety group-hover:text-orange-safetyLight">
+                立即申报
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </div>
+            </a>
+
+            <!-- 其他 -->
+            <a href="/form-demo?type=其他" class="group glass-panel rounded-3xl p-7 transition duration-300 hover:-translate-y-2 hover:border-orange-safety/45 reveal-scale" style="transition-delay: 0.3s">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                  </svg>
+                </div>
+                <span class="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-wind">MODULE / 04</span>
+              </div>
+              <h3 class="font-display text-2xl font-bold text-white">其他申报</h3>
+              <p class="mt-4 leading-7 text-steel-300">
+                其他安全相关事项申报、安全建议反馈、事故隐患举报等，共同维护安全管理体系持续改进。
+              </p>
+              <div class="mt-6 flex items-center text-sm font-medium text-orange-safety group-hover:text-orange-safetyLight">
+                立即申报
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </div>
+            </a>
+          </div>
+
+          <!-- 安全考试入口横幅 -->
+          <a href="/exam" class="mt-8 group block rounded-3xl border border-orange-safety/30 bg-gradient-to-r from-orange-safety/10 via-orange-safety/5 to-transparent p-8 backdrop-blur-sm transition hover:border-orange-safety hover:-translate-y-1 reveal-scale">
+            <div class="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex items-center gap-4">
+                <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-safety/20 text-orange-safety">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-display text-2xl font-bold text-white sm:text-3xl">安全知识考试</h3>
+                  <p class="mt-1 text-steel-300">风电运输安全知识考试，满分100分，80分合格。考核合格后系统记录成绩。</p>
+                </div>
+              </div>
+              <div class="shrink-0 rounded-full bg-orange-safety px-6 py-3 text-sm font-bold text-navy-950 shadow-lg shadow-orange-safety/25 transition group-hover:bg-orange-safetyLight">
+                立即考试 →
+              </div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- ============ 安全学习 ============ -->
+      <div class="section-divider my-6 container-x" aria-hidden="true"></div>
+      <KnowledgeLibrarySection client:load />
+    </main>
+
+    <footer class="border-t border-white/10">
+      <div class="container-x py-16">
+        <div class="grid gap-10 md:grid-cols-[1.6fr_1fr_1fr]">
+          <!-- Brand -->
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+                <svg aria-hidden="true" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M4.5 7.5 12 12l7.5-4.5M5 17l7-5 7 5"/><circle cx="12" cy="12" r="2.2"/></svg>
+              </span>
+              <span class="font-display text-base font-bold tracking-[0.12em] text-white">风电大件运输安全知识中心</span>
+            </div>
+            <p class="mt-4 max-w-sm text-sm leading-6 text-steel-400">系统解析叶片、塔筒、机舱等风电大件设备从工厂到风场的运输路径、风险控制、绑扎固定与安全作业标准，为工程团队建立可执行的知识地图。</p>
+            <p class="mt-6 text-xs text-steale-500 font-mono">Heavy-Lift Safety Atlas v1.0</p>
+          </div>
+
+          <!-- Content -->
+          <div>
+            <h4 class="font-display text-sm font-bold text-white">知识体系</h4>
+            <ul class="mt-4 space-y-3">
+              <li><a href="#equipment" class="text-sm text-steel-400 transition hover:text-orange-safety">设备知识</a></li>
+              <li><a href="#route" class="text-sm text-steel-400 transition hover:text-orange-safety">运输流程</a></li>
+              <li><a href="#risk" class="text-sm text-steel-400 transition hover:text-orange-safety">风险矩阵</a></li>
+              <li><a href="#library" class="text-sm text-steel-400 transition hover:text-orange-safety">知识库</a></li>
+            </ul>
+          </div>
+
+          <!-- Topics -->
+          <div>
+            <h4 class="font-display text-sm font-bold text-white">专题</h4>
+            <ul class="mt-4 space-y-3">
+              <li><a href="#library" class="text-sm text-steel-400 transition hover:text-orange-safety">知识库</a></li>
+              <li><a href="#cases" class="text-sm text-steel-400 transition hover:text-orange-safety">事故案例</a></li>
+              <li><a href="#route" class="text-sm text-steel-400 transition hover:text-orange-safety">运输流程</a></li>
+              <li><a href="/exam" class="text-sm text-steel-400 transition hover:text-orange-safety">安全考试</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-12 border-t border-white/10 pt-8 flex flex-col justify-between gap-4 text-sm text-stele-500 md:flex-row md:items-center">
+          <p>© 2026 风电大件运输安全知识中心 &mdash; Built for safer renewable logistics.</p>
+          <div class="flex gap-6">
+            <span class="text-xs text-steel-500">路线勘察</span>
+            <span class="text-xs text-steel-500">绑扎固定</span>
+            <span class="text-xs text-steel-500">吊装安全</span>
+            <span class="text-xs text-steel-500">风险控制</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scroll reveal observer -->
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: "0px 0px -60px 0px" }
+      );
+      document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-scale").forEach((el) => observer.observe(el));
+    </script>
+  </body>
+</html>

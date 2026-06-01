@@ -1,0 +1,130 @@
+---
+import '../../styles/global.css';
+import { SiteParticles } from '../../components/SiteParticles';
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="塔筒运输桥梁承载核查方法：桥梁等级判断、轴荷分布计算、荷载试验要求、通行控制方案与临时加固措施。" />
+    <meta name="theme-color" content="#040E1A" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="塔筒运输桥梁承载核查｜风电大件运输安全知识中心" />
+    <meta property="og:description" content="塔筒运输桥梁承载核查方法：桥梁等级判断、轴荷分布计算、荷载试验要求、通行控制方案与临时加固措施。" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://example.com/library/tower-bridge-load" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="塔筒运输桥梁承载核查｜风电大件运输安全知识中心" />
+    <meta name="twitter:description" content="桥梁等级判断、轴荷分布计算、荷载试验要求、通行控制方案与临时加固措施。" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "塔筒运输桥梁承载核查",
+        "description": "塔筒运输桥梁承载核查方法：桥梁等级判断、轴荷分布计算、荷载试验要求、通行控制方案与临时加固措施。",
+        "inLanguage": "zh-CN",
+        "about": ["Wind Tower", "Bridge Load Verification", "Heavy-Lift Transport"],
+        "proficiencyLevel": "Expert"
+      }
+    </script>
+
+    <title>塔筒运输桥梁承载核查｜风电大件运输安全知识中心</title>
+  </head>
+  <body class="pb-20">
+    <SiteParticles client:load />
+    <header class="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/10 bg-navy-950/72 px-4 py-3 shadow-2xl shadow-black/30 backdrop-blur-xl sm:px-5">
+        <a href="/" class="flex items-center gap-3">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M4.5 7.5 12 12l7.5-4.5M5 17l7-5 7 5"/><circle cx="12" cy="12" r="2.2"/></svg>
+          </span>
+          <span class="font-display text-sm font-bold text-white sm:text-base">知识库</span>
+        </a>
+        <a href="/#library" class="text-sm text-steel-400 transition hover:text-white">← 返回知识库</a>
+      </nav>
+    </header>
+
+    <main class="pt-28">
+      <article class="container-article">
+        <p class="section-kicker">Bridge Load Verification</p>
+        <h1 class="mt-5 font-display text-4xl font-black leading-tight tracking-[-0.03em] text-white sm:text-5xl xl:text-6xl">塔筒运输桥梁承载核查</h1>
+        <p class="mt-5 text-base leading-7 text-steel-400">桥梁普查 · 轴荷计算 · 荷载试验 · 通行控制 · 临时加固</p>
+
+        <div class="mt-10 h-px bg-gradient-to-r from-orange-safety/50 via-white/20 to-transparent"></div>
+
+        <div class="article-body">
+          <h2>一、概述</h2>
+          <p>风电机组塔筒（tower）通常分为 3-5 段运输，每段长度 15–30 米，单段重量 15–40 吨，整机塔筒总重可达 60–90 吨。塔筒运输的车辆组合多为液压轴线车（hydraulic modular trailer）配合动力头，荷载集中程度高，对桥梁结构的影响是最核心的安全控制项。</p>
+          <p>与叶片运输关注"扫尾空间"不同，塔筒运输的核心风险在于<strong>垂向荷载</strong>——轴荷是否在桥梁承载能力范围之内。一次轴荷超限可能导致桥面铺装开裂、主梁疲劳损伤甚至结构失效。</p>
+
+          <h2>二、桥梁普查与分级</h2>
+          <p>全线桥梁普查应作为路线勘察的前置条件，数据应更新至最近一次检测报告（不超过 6 个月）。</p>
+
+          <h3>普查内容</h3>
+          <ul>
+            <li><strong>基本信息：</strong>桥梁名称、路线桩号、结构形式（空心板梁、T 梁、箱梁、拱桥、斜拉桥等）、跨径组合（单跨/多跨）、建造年份、设计荷载等级。</li>
+            <li><strong>技术状况：</strong>最近一次定期检查的技术状况评定等级（1 类–5 类），重点关注 3 类及以下桥梁的病害分布（裂缝、钢筋锈蚀、支座位移、桥台沉降等）。</li>
+            <li><strong>历史通行记录：</strong>该桥是否有超限运输车辆的通行历史，是否有历史荷载试验报告或加固改造记录。</li>
+          </ul>
+
+          <h3>分级处理</h3>
+          <ul>
+            <li><strong>A 级桥梁（设计荷载 ≥ 公路-I 级，技术状况 1–2 类）：</strong>可通过标准复核流程，无需额外加固。</li>
+            <li><strong>B 级桥梁（设计荷载 ≥ 公路-II 级，技术状况 2–3 类）：</strong>需逐桥进行轴荷验算，必要时限制通行速度 ≤ 5 km/h。</li>
+            <li><strong>C 级桥梁（技术状况 3–4 类或设计荷载不明）：</strong>需委托专业检测机构进行荷载试验，评估实际承载能力。</li>
+          </ul>
+
+          <h2>三、轴荷分布计算</h2>
+          <p>塔筒运输车辆的轴荷计算相比普通重载运输更为复杂，主要原因在于塔筒是圆柱长件，其重心位置随装载姿态变化，且分段塔筒的直径变化导致鞍座支撑反力不均匀。</p>
+
+          <div class="highlight-box">
+            <p><strong>计算方法：</strong>采用有限元分析或专用超限运输轴荷计算软件，建模输入参数包括：车辆轴距和轴数配置、液压悬架压力分配、塔筒段重量和重心位置、鞍座位置和支撑角度、装载高度对风荷载的放大效应。</p>
+          </div>
+
+          <h3>最不利工况</h3>
+          <ul>
+            <li><strong>跨中加载：</strong>车辆最重轴组位于桥梁跨中位置时，主梁跨中弯矩达到峰值。</li>
+            <li><strong>支座偏载：</strong>车辆紧贴桥梁一侧行驶时，该侧主梁和支座承受的荷载显著增大。</li>
+            <li><strong>制动工况：</strong>车辆在桥上紧急制动时，纵向惯性力对支座和桥墩产生附加推力。</li>
+          </ul>
+
+          <h2>四、荷载试验</h2>
+          <p>对于缺乏设计资料、技术状况较差或历史上曾发生超限受损的桥梁，运输前应进行荷载试验验证。</p>
+
+          <ul>
+            <li><strong>静载试验：</strong>采用已知重量的加载车辆按预定位置停靠，测量主梁挠度、应变、裂缝宽度等响应参数，与理论计算值对比，判定结构实际刚度与承载能力。</li>
+            <li><strong>动载试验：</strong>以不同速度通过桥梁，采集结构的动力响应（自振频率、冲击系数、阻尼比），评估结构在通行工况下的安全裕度。</li>
+            <li><strong>验收标准：</strong>校验系数 η（实测值/理论值）应在 0.6–1.0 之间，且残余变形不超过总变形的 20%。</li>
+          </ul>
+
+          <h2>五、通行控制与临时加固</h2>
+          <h3>通行控制措施</h3>
+          <ul>
+            <li><strong>限速通行：</strong>大件运输车辆通过桥梁速度控制在 5–10 km/h，减少冲击系数。</li>
+            <li><strong>居中行驶：</strong>车辆严格沿桥梁中心线行驶，均匀分配荷载至两侧主梁。</li>
+            <li><strong>单车通过：</strong>桥梁上禁止会车，确保只有大件运输车辆占用全幅桥面。</li>
+            <li><strong>交通管制：</strong>必要时封闭对向交通，由前导车辆压道护送。</li>
+          </ul>
+
+          <h3>临时加固方案</h3>
+          <p>当桥梁承载能力不足且无法绕行时，可采取以下临时加固措施（需经设计单位出具方案）：搭设临时支撑墩减少跨径、桥面铺设厚钢板分散轮压、体外预应力加固、粘贴碳纤维布（CFRP）提高截面承载力。</p>
+
+          <h2>六、总结</h2>
+          <p>塔筒运输的桥梁承载核查应作为大件运输安全评估的独立专业模块，由具有桥梁工程经验的专业工程师执行。核查报告应明确提出每座控制性桥梁的通行条件、限速要求和应急预案。在多次运输同一路线时，建议建立桥梁健康监测档案，记录每次通行后的桥况变化，形成基于数据的桥梁服役状态管理机制。</p>
+        </div>
+
+        <div class="mt-16 flex items-center justify-between border-t border-white/10 pt-8">
+          <a href="/library/blade-route-survey" class="text-sm text-steel-400 transition hover:text-white">← 上一篇：叶片运输路线勘察指南</a>
+          <a href="/library/nacelle-lashing" class="text-sm text-orange-safety transition hover:text-orange-safetyLight">下一篇：机舱装卸与绑扎固定方法 →</a>
+        </div>
+      </article>
+    </main>
+  </body>
+</html>

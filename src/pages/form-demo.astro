@@ -1,0 +1,252 @@
+---
+import '../styles/global.css';
+import { FileUpload } from '../components/FileUpload';
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="表单上传组件演示" />
+    <title>安全检查和培训 - 风电大件运输安全知识中心</title>
+  </head>
+  <body class="bg-navy-950 min-h-screen">
+    <header class="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/10 bg-navy-950/72 px-4 py-3 shadow-2xl shadow-black/30 backdrop-blur-xl sm:px-5" aria-label="主导航">
+        <a href="/" class="group flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-orange-safety focus:ring-offset-2 focus:ring-offset-navy-950">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-safety/40 bg-orange-safety/10 text-orange-safety">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M4.5 7.5 12 12l7.5-4.5M5 17l7-5 7 5"/><circle cx="12" cy="12" r="2.2"/></svg>
+          </span>
+          <span>
+            <span class="block font-display text-sm font-bold tracking-[0.16em] text-white sm:text-base">风电大件运输安全知识中心</span>
+            <span class="hidden font-mono text-[10px] uppercase tracking-[0.28em] text-steel-400 sm:block">Heavy-Lift Safety Atlas</span>
+          </span>
+        </a>
+        <a href="/" class="hidden min-h-11 items-center rounded-full bg-white/5 px-4 py-2 text-sm font-bold text-white backdrop-blur transition hover:bg-white/10 sm:inline-flex">返回首页</a>
+      </nav>
+    </header>
+
+    <main class="pt-32 pb-20">
+      <div class="mx-auto max-w-4xl px-4 sm:px-6">
+        <div class="text-center mb-12">
+          <h1 class="font-display text-4xl font-bold leading-tight tracking-[-0.03em] text-white sm:text-5xl">
+            安全检查和培训
+          </h1>
+          <p class="mt-4 text-lg leading-8 text-steel-300">
+            支持拖拽上传、进度条显示、缩略图预览、点击放大、删除等功能
+          </p>
+        </div>
+
+        <!-- 上传组件演示 -->
+        <div class="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
+          <h2 class="text-2xl font-bold text-white mb-6">信息填写</h2>
+
+          <form id="check-form" class="space-y-6">
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div>
+                <label class="block text-sm font-medium text-white mb-2">项目名称</label>
+                <input
+                  name="project_name"
+                  type="text"
+                  class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20"
+                  placeholder="请输入项目名称"
+                  required
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-white mb-2">检查日期</label>
+                <input
+                  name="check_date"
+                  type="date"
+                  class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20"
+                  required
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-white mb-2">物流公司</label>
+                <input
+                  name="logistics_company"
+                  type="text"
+                  class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20"
+                  placeholder="请输入物流公司名称"
+                  required
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-white mb-2">执行人员</label>
+                <input
+                  name="operator"
+                  type="text"
+                  class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20"
+                  placeholder="请输入执行人员姓名"
+                  required
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-white mb-2">类型</label>
+                <select
+                  name="type"
+                  id="type-select"
+                  class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20"
+                  required
+                >
+                  <option value="安全检查">安全检查</option>
+                  <option value="安全培训">安全培训</option>
+                  <option value="应急演练">应急演练</option>
+                  <option value="其他">其他</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-white mb-2">检查地点</label>
+                <input
+                  name="location"
+                  type="text"
+                  class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20"
+                  placeholder="请输入检查地点"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-white mb-2">检查内容描述</label>
+              <textarea
+                name="description"
+                rows={4}
+                class="w-full rounded-xl border border-white/10 bg-navy-950/50 px-4 py-3 text-white placeholder:text-steel-500 focus:border-orange-safety focus:outline-none focus:ring-2 focus:ring-orange-safety/20"
+                placeholder="请详细描述检查内容"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-white mb-2">上传现场照片和附件</label>
+              <!-- 这里使用我们开发的上传组件 -->
+              <FileUpload
+                client:load
+                maxFiles={10}
+                maxSize={50 * 1024 * 1024}
+                onUploadSuccess={(files) => {
+                  console.log("上传成功的文件：", files);
+                  // 后面表单提交时可以把这些文件的URL一起提交
+                }}
+              />
+            </div>
+
+            <div class="flex items-center justify-end gap-4 pt-4">
+              <button
+                type="button"
+                id="reset-btn"
+                class="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-bold text-white backdrop-blur transition hover:bg-white/10"
+              >
+                重置
+              </button>
+              <button
+                type="submit"
+                id="submit-btn"
+                class="rounded-full bg-orange-safety px-6 py-3 text-sm font-bold text-navy-950 shadow-lg shadow-orange-safety/25 transition hover:bg-orange-safetyLight"
+              >
+                提交表单
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // 根据URL参数自动选择类型
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('type');
+        if (type) {
+          const select = document.getElementById('type-select') as HTMLSelectElement;
+          if (select) {
+            select.value = type;
+          }
+        }
+
+        // 表单提交逻辑
+        const form = document.getElementById('check-form') as HTMLFormElement;
+        if (form) {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // 获取表单数据
+            const formData = new FormData(form);
+            const data = {
+              project_name: formData.get('project_name') as string,
+              check_date: formData.get('check_date') as string,
+              logistics_company: formData.get('logistics_company') as string,
+              operator: formData.get('operator') as string,
+              type: formData.get('type') as string,
+              location: formData.get('location') as string,
+              description: formData.get('description') as string,
+              files: (window as any).getUploadFiles ? (window as any).getUploadFiles() : [],
+            };
+
+            // 校验
+            if (!data.project_name || !data.check_date || !data.logistics_company || !data.operator || !data.type || !data.location || !data.description) {
+              alert('请填写完整信息');
+              return;
+            }
+
+            if (data.files.length === 0) {
+              alert('请至少上传一个文件');
+              return;
+            }
+
+            // 检查是否有文件正在上传
+            const uploadingFiles = data.files.filter((f: any) => f.status === 'uploading');
+            if (uploadingFiles.length > 0) {
+              alert('有文件正在上传，请稍候');
+              return;
+            }
+
+            // 提交按钮状态
+            const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '提交中...';
+
+            try {
+              // 提交到后端
+              const res = await fetch('/api/form-submit', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+              });
+
+              const result = await res.json();
+
+              if (result.success) {
+                alert('提交成功！');
+                // 重置表单
+                form.reset();
+                // 刷新页面清空上传列表
+                window.location.reload();
+              } else {
+                alert(`提交失败：${result.message}`);
+              }
+            } catch (error) {
+              alert(`提交失败：${error instanceof Error ? error.message : '网络错误'}`);
+            } finally {
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalText;
+            }
+          });
+        }
+
+        // 重置按钮
+        const resetBtn = document.getElementById('reset-btn') as HTMLButtonElement;
+        resetBtn.addEventListener('click', () => {
+          if (confirm('确定要重置表单吗？已上传的文件将会被清空。')) {
+            window.location.reload();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

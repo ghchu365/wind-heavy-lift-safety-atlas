@@ -1,0 +1,47 @@
+{
+  "name": "wind-heavy-lift-safety-atlas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 0.0.0.0",
+    "build": "astro build",
+    "preview": "astro preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@astrojs/react": "^5.0.6",
+    "@astrojs/tailwind": "latest",
+    "@libsql/client": "^0.13.0",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@tsparticles/engine": "^3.9.1",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.9.1",
+    "@types/ali-oss": "^6.23.3",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/crypto-js": "^4.2.2",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/jszip": "^3.4.0",
+    "ali-oss": "^6.23.0",
+    "astro": "latest",
+    "bcryptjs": "^3.0.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
+    "framer-motion": "^12.40.0",
+    "jsonwebtoken": "^9.0.3",
+    "jszip": "^3.10.1",
+    "lucide-react": "^1.17.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-dropzone": "^15.0.0",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "latest",
+    "viewerjs": "^1.11.7"
+  },
+  "devDependencies": {
+    "@astrojs/vercel": "^9.0.5",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "dotenv": "^17.4.2"
+  }
+}
