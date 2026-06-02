@@ -174,11 +174,12 @@ import { FileUpload } from '../components/FileUpload';
 
             // 获取表单数据
             const formData = new FormData(form);
-            let files = [];
-            // 尝试两种方式获取文件，保证一定能拿到
-            if ((window as any).getUploadFiles) {
+            // 优先使用预计算好的成功文件列表，这绝对不会错
+            let files = (window as any).__SUCCESS_FILES__ || [];
+            // 如果没有就尝试其他方式（向后兼容）
+            if (files.length === 0 && (window as any).getUploadFiles) {
               files = (window as any).getUploadFiles();
-            } else if ((window as any).__UPLOADED_FILES__) {
+            } else if (files.length === 0 && (window as any).__UPLOADED_FILES__) {
               files = (window as any).__UPLOADED_FILES__
                 .filter((f: any) => f.status === "success")
                 .map((f: any) => ({

@@ -247,6 +247,20 @@ export function FileUpload({
     }
   });
 
+  // 每次files变化，直接更新window上的成功文件列表，这绝对不会错
+  useEffect(() => {
+    const successFiles = files
+      .filter(f => f.status === "success")
+      .map(f => ({
+        name: f.name,
+        size: f.size,
+        url: f.url,
+        type: f.type,
+      }));
+    (window as any).__SUCCESS_FILES__ = successFiles;
+    (window as any).__ALL_FILES__ = files;
+  });
+
   // 使用ref保存最新的files，保证window.getUploadFiles总能读到最新数据
   const filesRef = useRef(files);
   filesRef.current = files;
@@ -277,6 +291,8 @@ export function FileUpload({
     return () => {
       delete (window as any).getUploadFiles;
       delete (window as any).__UPLOADED_FILES__;
+      delete (window as any).__SUCCESS_FILES__;
+      delete (window as any).__ALL_FILES__;
     };
   }, [files]);
 
