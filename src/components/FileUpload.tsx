@@ -247,26 +247,54 @@ export function FileUpload({
     }
   });
 
+  // 每次files变化，直接更新window上的成功文件列表，这绝对不会错
+  useEffect(() => {
+    const successFiles = files
+      .filter(f => f.status === "success")
+      .map(f => ({
+        name: f.name,
+        size: f.size,
+        url: f.url,
+        type: f.type,
+      }));
+    (window as any).__SUCCESS_FILES__ = successFiles;
+    (window as any).__ALL_FILES__ = files;
+  });
+
+  // 使用ref保存最新的files，保证window.getUploadFiles总能读到最新数据
+  const filesRef = useRef(files);
+  filesRef.current = files;
+
+  // 直接把最新files存在window上，这是最保险的方式
+  useEffect(() => {
+    (window as any).__UPLOADED_FILES__ = files;
+  });
+
   // 判断是否是图片
   const isImageFile = (file: File) => file.type.startsWith("image/");
 
-  // 对外暴露获取成功上传的文件列表方法
-  const getSuccessFiles = useCallback(() => {
-    return files.filter(f => f.status === "success").map(f => ({
-      name: f.name,
-      size: f.size,
-      url: f.url,
-      type: f.type,
-    }));
-  }, [files]);
+  // 对外暴露获取成功上传的文件列表方法 - 总是从ref读最新数据
+  const getSuccessFiles = () => {
+    return filesRef.current
+      .filter(f => f.status === "success")
+      .map(f => ({
+        name: f.name,
+        size: f.size,
+        url: f.url,
+        type: f.type,
+      }));
+  };
 
-  // 把方法挂载到window，方便父页面调用（简单实现，也可以用props传递回调）
+  // files变化时更新window上的函数引用
   useEffect(() => {
     (window as any).getUploadFiles = getSuccessFiles;
     return () => {
       delete (window as any).getUploadFiles;
+      delete (window as any).__UPLOADED_FILES__;
+      delete (window as any).__SUCCESS_FILES__;
+      delete (window as any).__ALL_FILES__;
     };
-  }, [getSuccessFiles]);
+  }, [files]);
 
   return (
     <div className={cn("w-full", className)}>
