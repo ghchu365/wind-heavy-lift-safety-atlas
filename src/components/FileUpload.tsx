@@ -52,6 +52,28 @@ export function FileUpload({
   const viewerRef = useRef<HTMLDivElement>(null);
   const viewerInstanceRef = useRef<Viewer | null>(null);
 
+  // 每次files变化，立即更新到window，保证外部总能读到最新数据
+  const updateWindowFiles = (newFiles: FileItem[]) => {
+    const successFiles = newFiles
+      .filter(f => f.status === "success")
+      .map(f => ({
+        name: f.name,
+        size: f.size,
+        url: f.url,
+        type: f.type,
+      }));
+    (window as any).__SUCCESS_FILES__ = successFiles;
+    (window as any).__ALL_FILES__ = newFiles;
+  };
+
+  const setFilesAndSync = (updater: (prev: FileItem[]) => FileItem[]) => {
+    setFiles(prev => {
+      const next = updater(prev);
+      updateWindowFiles(next);
+      return next;
+    });
+  };
+
   // 初始化ViewerJS预览
   useEffect(() => {
     if (viewerRef.current && !viewerInstanceRef.current) {
@@ -172,24 +194,24 @@ export function FileUpload({
     }));
 
     // 添加到文件列表
-    setFiles(prev => [...prev, ...newFileItems]);
+    setFilesAndSync(prev => [...prev, ...newFileItems]);
 
     // 逐个上传
     for (const fileItem of newFileItems) {
       try {
         const url = await uploadToOSS(fileItem.file, (progress) => {
-          setFiles(prev => prev.map(f =>
+          setFilesAndSync(prev => prev.map(f =>
             f.id === fileItem.id ? { ...f, progress } : f
           ));
         });
 
         // 更新上传成功状态
-        setFiles(prev => prev.map(f =>
+        setFilesAndSync(prev => prev.map(f =>
           f.id === fileItem.id ? { ...f, status: "success", url } : f
         ));
       } catch (error) {
         // 更新上传失败状态
-        setFiles(prev => prev.map(f =>
+        setFilesAndSync(prev => prev.map(f =>
           f.id === fileItem.id ? {
             ...f,
             status: "error",
@@ -208,7 +230,7 @@ export function FileUpload({
 
   // 删除文件
   const removeFile = useCallback((fileId: string) => {
-    setFiles(prev => {
+    setFilesAndSync(prev => {
       const fileToRemove = prev.find(f => f.id === fileId);
       // 释放预览URL
       if (fileToRemove?.preview) {
@@ -247,42 +269,15 @@ export function FileUpload({
     }
   });
 
-  // 每次files变化，直接更新window上的成功文件列表，这绝对不会错
-  useEffect(() => {
-    const successFiles = files
-      .filter(f => f.status === "success")
-      .map(f => ({
-        name: f.name,
-        size: f.size,
-        url: f.url,
-        type: f.type,
-      }));
-    (window as any).__SUCCESS_FILES__ = successFiles;
-    (window as any).__ALL_FILES__ = files;
-  });
-
-  // 使用ref保存最新的files，保证window.getUploadFiles总能读到最新数据
-  const filesRef = useRef(files);
-  filesRef.current = files;
-
-  // 直接把最新files存在window上，这是最保险的方式
-  useEffect(() => {
-    (window as any).__UPLOADED_FILES__ = files;
-  });
+  // 初始化就更新一次空列表
+  updateWindowFiles([]);
 
   // 判断是否是图片
   const isImageFile = (file: File) => file.type.startsWith("image/");
 
-  // 对外暴露获取成功上传的文件列表方法 - 总是从ref读最新数据
+  // 对外暴露获取成功上传的文件列表方法
   const getSuccessFiles = () => {
-    return filesRef.current
-      .filter(f => f.status === "success")
-      .map(f => ({
-        name: f.name,
-        size: f.size,
-        url: f.url,
-        type: f.type,
-      }));
+    return (window as any).__SUCCESS_FILES__ || [];
   };
 
   // files变化时更新window上的函数引用
@@ -294,7 +289,7 @@ export function FileUpload({
       delete (window as any).__SUCCESS_FILES__;
       delete (window as any).__ALL_FILES__;
     };
-  }, [files]);
+  }, []);
 
   return (
     <div className={cn("w-full", className)}>
