@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { initDB, getChinaTimeString } from "../../lib/db";
+import { initDB, getChinaTimeString, closeDB } from "../../lib/db";
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -43,17 +43,22 @@ export const POST: APIRoute = async ({ request }) => {
       ]
     );
 
+    // 关闭数据库连接
+    await closeDB();
+
     return new Response(
       JSON.stringify({
         success: true,
         message: "提交成功",
         data: {
-          id: result.lastInsertRowid,
+          id: Number(result.lastInsertRowid), // Turso返回的是bigint类型，转成number避免JSON序列化错误
         },
       }),
       { status: 200 }
     );
   } catch (error) {
+    // 出错也要关闭连接
+    await closeDB();
     return new Response(
       JSON.stringify({
         success: false,
