@@ -250,27 +250,23 @@ export function FileUpload({
   // 判断是否是图片
   const isImageFile = (file: File) => file.type.startsWith("image/");
 
-  // 使用ref保存最新的files引用
-  const filesRef = useRef(files);
-  filesRef.current = files;
-
   // 对外暴露获取成功上传的文件列表方法
-  const getSuccessFiles = useCallback(() => {
-    return filesRef.current.filter(f => f.status === "success").map(f => ({
+  const getSuccessFiles = () => {
+    return files.filter(f => f.status === "success").map(f => ({
       name: f.name,
       size: f.size,
       url: f.url,
       type: f.type,
     }));
-  }, []);
+  };
 
-  // 把方法挂载到window，方便父页面调用（简单实现，也可以用props传递回调）
+  // 把方法挂载到window，files变化时及时更新
   useEffect(() => {
     (window as any).getUploadFiles = getSuccessFiles;
     return () => {
       delete (window as any).getUploadFiles;
     };
-  }, [getSuccessFiles]);
+  }, [files]);
 
   return (
     <div className={cn("w-full", className)}>
