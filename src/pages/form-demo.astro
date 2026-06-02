@@ -189,6 +189,8 @@ import { FileUpload } from '../components/FileUpload';
                   type: f.type,
                 }));
             }
+            // 调试信息
+            alert(`调试：找到 ${files.length} 个上传成功文件\n__SUCCESS_FILES__ length: ${(window as any).__SUCCESS_FILES__?.length || 0}\ngetUploadFiles() length: ${(window as any).getUploadFiles ? (window as any).getUploadFiles().length : 'undefined'}`);
             const data = {
               project_name: formData.get('project_name') as string,
               check_date: formData.get('check_date') as string,
