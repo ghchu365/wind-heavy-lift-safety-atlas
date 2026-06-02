@@ -206,8 +206,14 @@ import { FileUpload } from '../components/FileUpload';
               return;
             }
 
-            if (data.files.length === 0) {
-              alert('请至少上传一个文件');
+            let debugMsg = `调试信息:
+找到 ${files.length} 个文件
+__SUCCESS_FILES__ 长度: ${(window as any).__SUCCESS_FILES__?.length || 0}
+getUploadFiles 存在: ${!!(window as any).getUploadFiles}
+__SUCCESS_FILES__ 内容: ${JSON.stringify((window as any).__SUCCESS_FILES__)}`;
+
+            if (files.length === 0) {
+              alert(debugMsg + '\n\n👉 请至少上传一个文件');
               return;
             }
 
