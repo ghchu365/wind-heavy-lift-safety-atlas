@@ -174,6 +174,20 @@ import { FileUpload } from '../components/FileUpload';
 
             // 获取表单数据
             const formData = new FormData(form);
+            let files = [];
+            // 尝试两种方式获取文件，保证一定能拿到
+            if ((window as any).getUploadFiles) {
+              files = (window as any).getUploadFiles();
+            } else if ((window as any).__UPLOADED_FILES__) {
+              files = (window as any).__UPLOADED_FILES__
+                .filter((f: any) => f.status === "success")
+                .map((f: any) => ({
+                  name: f.name,
+                  size: f.size,
+                  url: f.url,
+                  type: f.type,
+                }));
+            }
             const data = {
               project_name: formData.get('project_name') as string,
               check_date: formData.get('check_date') as string,
@@ -182,7 +196,7 @@ import { FileUpload } from '../components/FileUpload';
               type: formData.get('type') as string,
               location: formData.get('location') as string,
               description: formData.get('description') as string,
-              files: (window as any).getUploadFiles ? (window as any).getUploadFiles() : [],
+              files,
             };
 
             // 校验

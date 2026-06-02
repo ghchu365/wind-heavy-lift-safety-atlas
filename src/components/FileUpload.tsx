@@ -251,6 +251,11 @@ export function FileUpload({
   const filesRef = useRef(files);
   filesRef.current = files;
 
+  // 直接把最新files存在window上，这是最保险的方式
+  useEffect(() => {
+    (window as any).__UPLOADED_FILES__ = files;
+  });
+
   // 判断是否是图片
   const isImageFile = (file: File) => file.type.startsWith("image/");
 
@@ -271,6 +276,7 @@ export function FileUpload({
     (window as any).getUploadFiles = getSuccessFiles;
     return () => {
       delete (window as any).getUploadFiles;
+      delete (window as any).__UPLOADED_FILES__;
     };
   }, [files]);
 
